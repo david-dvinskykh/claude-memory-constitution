@@ -1,0 +1,26 @@
+{
+  "template": "notion-memory-constitution",
+  "version": "1.0.0",
+  "released": "2026-08-31",
+  "schema_version": "1",
+  "constitution_version": "1.0",
+  "summary": "Первый публичный выпуск: 16 баз, конституция v1.0, установка одной командой, регламент обновлений.",
+  "spec": {
+    "schema": "spec/schema.json",
+    "constitution": "spec/constitution.txt",
+    "install": "spec/install.txt",
+    "update": "spec/update.txt",
+    "migrations": "spec/migrations.json"
+  },
+  "min_client": {
+    "notion_mcp_tools": [
+      "notion-search",
+      "notion-fetch",
+      "notion-create-pages",
+      "notion-update-page",
+      "notion-create-database",
+      "notion-update-data-source",
+      "notion-query-data-sources"
+    ]
+  }
+}
