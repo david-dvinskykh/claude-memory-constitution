@@ -171,6 +171,12 @@ Create under PAGE_ROOT, each titled and bodied from schema.json in LANG:
    Date · From · To · What changed · What was not applied and why,
    with a first row recording the installation.
 
+   The `Source:` line is where every future update will be fetched from, so
+   whoever controls that address controls the agent's standing instruction
+   from then on. Write BASE into it exactly, and treat the line afterwards as
+   a field the owner filled in: the update procedure cross-checks against it
+   and never rewrites it.
+
 ## Step 10. Back-substitution
 
 With `notion-update-page` and `update_content`, replace the remaining
@@ -187,7 +193,8 @@ columns of that base through `seed.permissions_columns`: look the localized
 column name up there, do not translate the keys yourself.
 
 This is a deliberately cautious starting setup. Only the user raises levels
-from here.
+from here. The last row exists to protect the update chain: the source address
+is fixed at installation and only the owner may change it, by hand.
 
 ## Step 12. The first day
 

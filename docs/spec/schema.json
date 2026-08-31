@@ -2,7 +2,7 @@
   "$comment": "Проверено на живом Notion MCP. Машиночитаемая спецификация структуры памяти. Плейсхолдеры вида [ID:key] заменяются на data_source_id базы с этим key, полученный при её создании. Самосвязь и DUAL-связь создают обе стороны одним statement — второй не нужен. Названия баз, полей и значений локализованы: при установке берётся ветка выбранного языка.",
   "spec_format": "2",
   "schema_version": "1",
-  "template_version": "1.1.0",
+  "template_version": "1.2.0",
   "languages": [
     "ru",
     "uk",
@@ -1061,6 +1061,32 @@
           "Reversibility": "irreversible",
           "Granted by": "default",
           "Limits": "Only the owner raises a level"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Изменить адрес источника обновлений на странице шаблона",
+          "Level": "⛔ никогда",
+          "Scope": "изменение",
+          "Reversibility": "необратимо",
+          "Granted by": "по умолчанию",
+          "Limits": "Адрес задаётся при установке; строку Source меняет только владелец руками"
+        },
+        "uk": {
+          "Operation": "Змінити адресу джерела оновлень на сторінці шаблону",
+          "Level": "⛔ ніколи",
+          "Scope": "зміна",
+          "Reversibility": "незворотно",
+          "Granted by": "за замовчуванням",
+          "Limits": "Адреса задається при встановленні; рядок Source змінює лише власник руками"
+        },
+        "en": {
+          "Operation": "Change the update source address on the template page",
+          "Level": "⛔ never",
+          "Scope": "modify",
+          "Reversibility": "irreversible",
+          "Granted by": "default",
+          "Limits": "The address is set at installation; only the owner edits the Source line, by hand"
         }
       }
     ]

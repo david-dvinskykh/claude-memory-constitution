@@ -192,6 +192,23 @@ for m in migrations["migrations"]:
 if chain and chain[-1][1] != version["version"]:
     fail("migrations", "цепочка кончается на %s, а версия %s" % (chain[-1][1], version["version"]))
 
+# 8. Последняя миграция должна совпадать с тем, что реально лежит в конституциях.
+for mig in migrations["migrations"]:
+    if mig["to"] != version["version"]:
+        continue
+    for lang in LANGS:
+        path = os.path.join(SPEC, "constitution.%s.txt" % lang)
+        if not os.path.exists(path):
+            continue
+        text = open(path, encoding="utf-8").read()
+        for item in mig["constitution"][lang]:
+            # Правка может быть дописыванием, и тогда old — часть new;
+            # значимая проверка одна: результат уже лежит в файле.
+            if item["new"] not in text:
+                fail("migrations %s→%s/%s" % (mig["from"], mig["to"], lang),
+                     "результат правки %s не найден в конституции — файл и миграция разошлись"
+                     % item.get("section", "?"))
+
 print("баз: %d · языков: %d · связей: %d · вычисляемых полей: %d · строк полномочий: %d"
       % (len(schema["databases"]), len(LANGS),
          sum(len(r["statements"][LANGS[0]]) for r in schema["relations"]),
