@@ -1,185 +1,214 @@
-# Установка структуры памяти в Notion — инструкция для агента
+# Installing the memory structure in Notion — instructions for the agent
 
-Ты выполняешь установку шаблона `notion-memory-constitution` в Notion пользователя.
-Читай этот файл целиком и исполняй по шагам. Не пересказывай шаги пользователю
-заранее — работай и отчитайся в конце.
+You are installing the `notion-memory-constitution` template into the user's
+Notion. Read this file in full and carry it out step by step. Do not walk the
+user through the steps in advance — do the work and report at the end.
 
-БАЗОВЫЙ АДРЕС шаблона (далее BASE) — каталог, из которого ты взял этот файл.
-Все остальные файлы лежат рядом: BASE/schema.json, BASE/constitution.txt,
-BASE/update.txt, BASE/migrations.json, а version.json — на уровень выше:
-BASE/../version.json.
+This file is in English so that it serves every supported language. The
+structure you create is NOT in English by default: its language is chosen by
+the user in step 1, and everything you create — base names, field names,
+option values, the constitution, the service pages — is created in that
+language. Talk to the user in that language too, from step 2 onward.
 
-## Правила исполнения
+THE BASE ADDRESS of the template (BASE below) is the directory you fetched
+this file from. The other files sit next to it: BASE/schema.json,
+BASE/constitution.<lang>.txt, BASE/update.txt, BASE/migrations.json, and
+version.json one level up: BASE/../version.json.
 
-1. Ничего не удаляй. Ни на одном шаге установки нет операции удаления.
-2. Ошибка на шаге — не молчи: скажи одной строкой, что не удалось, и продолжай
-   с того, что от неё не зависит. В конце перечисли невыполненное.
-3. «Создал» пиши только после успешного ответа инструмента.
-4. Не выдумывай поля и опции, которых нет в schema.json.
-5. Если пользователь уже что-то из этого имеет — см. шаг 1, повторно не создавай.
+## Rules of execution
 
-## Шаг 0. Инструменты и проверка
+1. Delete nothing. No step of this installation contains a delete operation.
+2. On an error, do not stay silent: say in one line what failed, then carry on
+   with whatever does not depend on it. List the unfinished items at the end.
+3. Write "created" only after a successful tool response.
+4. Do not invent fields or options that are not in schema.json.
+5. If the user already has some of this, see step 2 — do not create it twice.
 
-Загрузи инструменты Notion: search, fetch, create-pages, update-page,
-create-database, update-data-source, query-data-sources. Инструменты отложенные;
-без загрузки ничего не получится.
+## Step 0. Tools and preflight
 
-Скачай BASE/schema.json и BASE/../version.json. Если schema.json не читается —
-остановись и скажи об этом: без него установка невозможна.
+Load the Notion tools: search, fetch, create-pages, update-page,
+create-database, update-data-source, query-data-sources. The tools are
+deferred; without loading them nothing will work.
 
-## Шаг 1. Проверка, не установлено ли уже
+Fetch BASE/schema.json and BASE/../version.json. If schema.json cannot be read,
+stop and say so: the installation is impossible without it.
 
-`notion-search` по запросу «Обновления шаблона». Нашлась страница с заголовком
-«🔄 Обновления шаблона» и строкой «Шаблон: notion-memory-constitution» —
-установка уже была. Тогда не устанавливай заново: выполни BASE/update.txt
-и скажи об этом пользователю одной строкой.
+## Step 1. Language
 
-## Шаг 2. Куда ставить
+Ask the user which language the structure should be in. Offer exactly the
+languages listed in `languages` in schema.json, named as in `language_names`:
 
-Спроси у пользователя одну вещь и только одну: под какой страницей Notion
-создать базу знаний. Предложи вариант по умолчанию — отдельная страница
-верхнего уровня в личном пространстве. Ответ «по умолчанию» — создавай
-страницу верхнего уровня (create-pages без parent).
+- `ru` — Русский
+- `uk` — Українська
+- `en` — English
 
-## Шаг 3. Страницы-контейнеры
+Ask in all three, in one short line, so that the question is legible to
+whoever is reading. If the user answers in a language that is on the list,
+take that as the answer. If they decline to choose, use `default_language`
+from schema.json.
 
-Создай через `notion-create-pages`:
+Remember the choice as LANG. From here on, every value you take from
+schema.json is taken from its `LANG` branch, and you speak to the user in
+that language.
 
-1. Страницу `🧠 База знаний`, icon `🧠`, в выбранном месте. Тело:
-   «База знаний агента. Сущности — базы данных, остальное — страницы.
-   Точка входа — 🧭 Индекс, рабочая инструкция — 📜 Конституция памяти.»
-   Запомни её page_id как PAGE_ROOT.
-2. Подстраницу `🗃️ Картотека`, icon `🗃️`, parent = PAGE_ROOT. Тело:
-   «Документальный слой: люди, документы, дела, биография.»
-   Запомни page_id как PAGE_CARDFILE.
+The choice is made once, at installation. Reinstalling in a different
+language creates a second, separate structure — say so if the user asks.
 
-## Шаг 4. Базы данных
+## Step 2. Have we already installed?
 
-Для каждой записи массива `databases` из schema.json, в том порядке, в каком
-они там идут, вызови `notion-create-database`:
+`notion-search` for the template updates page, using the title from
+`pages[key=updates].title[LANG]` and also its English form. If a page is found
+whose body contains the line `Template: notion-memory-constitution`, the
+template is already installed. In that case do not install again: carry out
+BASE/update.txt instead and tell the user in one line.
 
-- `parent` = { "page_id": PAGE_ROOT } если `parent` = "root",
-  или { "page_id": PAGE_CARDFILE } если `parent` = "cardfile";
-- `title` = поле `title`;
-- `schema` = поле `ddl` без изменений;
-- `description` = поле `purpose`.
+## Step 3. Where to put it
 
-Из ответа возьми data_source_id (в теге `<data-source url="collection://...">`)
-и запиши его в таблицу соответствия KEY → DS_ID. Эта таблица нужна дальше;
-не потеряй её и не путай data_source_id с database_id.
+Ask the user one thing and only one: which Notion page the knowledge base
+should be created under. Offer a default — a separate top-level page in their
+private space. If the answer is "default", create a top-level page
+(create-pages with no parent).
 
-Создай все 16 баз, прежде чем идти дальше: связи ссылаются друг на друга.
+## Step 4. Container pages
 
-## Шаг 5. Связи
+Using `notion-create-pages`, create:
 
-Для каждой записи массива `relations`: возьми DS_ID базы из поля `on`, подставь
-в каждый statement реальные id вместо плейсхолдеров `[ID:key]` по таблице
-из шага 4 и вызови `notion-update-data-source` с этим data_source_id.
+1. The page `pages[key=root].title[LANG]`, icon from `icon` if present,
+   in the chosen location, with `pages[key=root].body[LANG]` as its body.
+   Remember its page_id as PAGE_ROOT.
+2. The subpage `pages[key=cardfile].title[LANG]`, parent = PAGE_ROOT, body
+   `pages[key=cardfile].body[LANG]`. Remember its page_id as PAGE_CARDFILE.
 
-Statements одной записи можно передать одной строкой через `;`.
+## Step 5. Databases
 
-Каждый statement с `DUAL` создаёт **обе** стороны связи: прямое поле здесь
-и обратное в целевой базе. Обратные поля («Факты» в 👥 Людях, «Отменён чем»
-в 🧩 Фактах, «Дети» в 👥 Людях) отдельно добавлять не нужно — иначе получишь
-дубли. То же и для самосвязей внутри одной базы.
+For every entry of the `databases` array in schema.json, in the order given,
+call `notion-create-database`:
 
-## Шаг 6. Формулы и роллапы
+- `parent` = { "page_id": PAGE_ROOT } when `parent` is "root",
+  or { "page_id": PAGE_CARDFILE } when `parent` is "cardfile";
+- `title` = `title[LANG]`;
+- `schema` = `ddl[LANG]`, unchanged;
+- `description` = `purpose[LANG]`.
 
-Так же выполни массив `computed`. Здесь допустим частичный отказ: если формула
-или роллап не создались, не останавливай установку — запиши в список
-невыполненного, чтобы пользователь добавил их руками. Всё остальное
-без них работает.
+Take the data_source_id from the response (in the
+`<data-source url="collection://...">` tag) and record it in a KEY → DS_ID
+table. You need that table for the rest of the installation; do not lose it
+and do not confuse data_source_id with database_id.
 
-## Шаг 7. Конституция
+Create all 16 databases before going further: the relations reference each
+other.
 
-1. Скачай BASE/constitution.txt.
-2. Замени в тексте плейсхолдеры:
+## Step 6. Relations
+
+For every entry of `relations`: take the DS_ID of the base named in `on`, take
+`statements[LANG]`, substitute real ids for the `[ID:key]` placeholders using
+the table from step 5, and call `notion-update-data-source` with that
+data_source_id.
+
+The statements of one entry may be passed as a single string separated by `;`.
+
+Every statement with `DUAL` creates **both** sides of the relation: the forward
+field here and the reverse field in the target base. Do not add the reverse
+fields separately — you would get duplicates. The same holds for
+self-relations inside one base.
+
+## Step 7. Formulas and rollups
+
+Carry out the `computed` array the same way, taking `statements[LANG]`. Partial
+failure is acceptable here: if a formula or a rollup is not created, do not
+stop the installation — put it on the list of unfinished items so the user can
+add it by hand. Everything else works without them.
+
+## Step 8. The constitution
+
+1. Fetch BASE/ + `pages[key=constitution].content_url[LANG]`.
+2. Replace the placeholders in the text:
    - `[ID:facts]`, `[ID:prefs]`, `[ID:people]`, `[ID:orgs]`, `[ID:places]`,
      `[ID:things]`, `[ID:projects]`, `[ID:processes]`, `[ID:ideas]`,
      `[ID:journal]`, `[ID:docs]`, `[ID:cases]`, `[ID:bio]`, `[ID:powers]`,
-     `[ID:queue]`, `[ID:inbox]` — на data_source_id соответствующих баз;
-   - `[ID:page:root]` — на PAGE_ROOT, `[ID:page:cardfile]` — на PAGE_CARDFILE.
-     Плейсхолдеры `[ID:page:index]`, `[ID:page:owner]`, `[ID:page:updates]`,
-     `[ID:page:history]`, `[ID:page:constitution]` оставь как есть — подставишь
-     на шаге 9, когда страницы будут созданы.
-   Незаменённых плейсхолдеров вида `[ID:` в тексте после шага 9 остаться
-   не должно. Останутся — скажи об этом: конституция с дырами не работает.
-3. Создай страницу `📜 Конституция памяти`, icon `📜`, parent = PAGE_ROOT,
-   тело — получившийся текст. Запомни page_id как PAGE_CONSTITUTION.
-4. Создай подстраницу `🕓 История изменений конституции`, icon `🕓`,
-   parent = PAGE_CONSTITUTION. Тело — таблица с заголовком
-   «Дата · Версия · Что изменилось · Основание» и первой строкой:
-   сегодняшняя дата · 1.0 · «Установлен шаблон notion-memory-constitution
-   версии <version из version.json>» · «установка». Запомни PAGE_HISTORY.
+     `[ID:queue]`, `[ID:inbox]` — with the data_source_id of the matching
+     base;
+   - `[ID:page:root]` with PAGE_ROOT, `[ID:page:cardfile]` with PAGE_CARDFILE.
+     Leave `[ID:page:index]`, `[ID:page:owner]`, `[ID:page:updates]`,
+     `[ID:page:history]` and `[ID:page:constitution]` as they are — you
+     substitute them in step 10, once those pages exist.
+   After step 10 no `[ID:` placeholder may remain in the text. If any remains,
+   say so: a constitution with holes does not work.
+3. Create the page `pages[key=constitution].title[LANG]`, parent = PAGE_ROOT,
+   body = the resulting text. Remember its page_id as PAGE_CONSTITUTION.
+4. Create the subpage `pages[key=history].title[LANG]`, parent =
+   PAGE_CONSTITUTION, body `pages[key=history].body[LANG]` followed by a table
+   with the columns Date · Version · What changed · Why (in LANG) and one
+   first row: today's date · 1.0 · "installed notion-memory-constitution
+   version <version from version.json>" · "installation". Remember
+   PAGE_HISTORY.
 
-## Шаг 8. Служебные страницы
+## Step 9. Service pages
 
-Создай под PAGE_ROOT:
+Create under PAGE_ROOT, each titled and bodied from schema.json in LANG:
 
-1. `👤 Владелец`, icon `👤`. Тело: «Сводка о владельце базы. Собирается только
-   из актуальных фактов с доверием «подтверждено» или «вероятно». Ничего
-   не писать сюда руками: чего нет в 🧩 Фактах — того нет и здесь.»
-   Запомни PAGE_OWNER.
-2. `🧭 Индекс`, icon `🧭`. Тело — таблица всех 16 баз: Название · Зачем
-   (поле `purpose` из schema.json) · ссылка на базу. Запомни PAGE_INDEX.
-3. `🔄 Обновления шаблона`, icon `🔄`. Тело:
+1. `pages[key=owner]` → remember PAGE_OWNER.
+2. `pages[key=index]` → below the body, a table of all 16 databases:
+   `title[LANG]` · `purpose[LANG]` · a link to the base. Remember PAGE_INDEX.
+3. `pages[key=updates]` → remember PAGE_UPDATES. Its body starts with the
+   following block. **Keep these keys in English exactly as written, in every
+   language** — the update procedure parses them. Put the localized
+   explanation, if any, after the block, not inside it.
 
    ```
-   Шаблон: notion-memory-constitution
-   Источник: <BASE>
-   Установленная версия: <version из version.json>
-   Версия схемы: <schema_version>
-   Версия конституции: <constitution_version>
-   Установлено: <сегодняшняя дата>
-   Последняя проверка обновлений: <сегодняшняя дата>
-   Регламент обновления: <BASE>/update.txt
+   Template: notion-memory-constitution
+   Source: <BASE>
+   Language: <LANG>
+   Installed version: <version from version.json>
+   Schema version: <schema_version>
+   Constitution version: <constitution_version>
+   Installed on: <today's date>
+   Last update check: <today's date>
+   Update procedure: <BASE>/update.txt
    ```
 
-   Ниже — заголовок «Журнал обновлений» и таблица
-   «Дата · Было · Стало · Что изменилось · Что не применено и почему»
-   с первой строкой об установке. Запомни PAGE_UPDATES.
+   Below it, a heading "Update log" (in LANG) and a table
+   Date · From · To · What changed · What was not applied and why,
+   with a first row recording the installation.
 
-## Шаг 9. Обратная подстановка
+## Step 10. Back-substitution
 
-Через `notion-update-page` с `update_content` замени в теле конституции
-оставшиеся плейсхолдеры на реальные id: `[ID:page:index]` → PAGE_INDEX,
-`[ID:page:owner]` → PAGE_OWNER, `[ID:page:updates]` → PAGE_UPDATES,
-`[ID:page:history]` → PAGE_HISTORY, `[ID:page:constitution]` → PAGE_CONSTITUTION.
+With `notion-update-page` and `update_content`, replace the remaining
+placeholders in the body of the constitution with real ids:
+`[ID:page:index]` → PAGE_INDEX, `[ID:page:owner]` → PAGE_OWNER,
+`[ID:page:updates]` → PAGE_UPDATES, `[ID:page:history]` → PAGE_HISTORY,
+`[ID:page:constitution]` → PAGE_CONSTITUTION.
 
-## Шаг 10. Стартовые полномочия
+## Step 11. Starting permissions
 
-Создай в базе ⚖️ Полномочия восемь строк. Это стартовая настройка: она
-намеренно осторожная, поднимать уровни будет только пользователь.
+Create eight rows in the ⚖️ Permissions base from `seed.permissions` in
+schema.json, taking each row's `LANG` branch. The keys of a row map to the
+columns of that base through `seed.permissions_columns`: look the localized
+column name up there, do not translate the keys yourself.
 
-| Операция | Уровень | Область | Обратимость | Кто разрешил | Ограничения |
-| --- | --- | --- | --- | --- | --- |
-| Создать факт, сущность или связь в базе знаний | 2 — делает молча | запись | обратимо | по умолчанию | По write-gate §2. Секреты не записывать никогда |
-| Дополнить пустое поле существующей карточки | 2 — делает молча | изменение | обратимо | по умолчанию | Только пустые поля |
-| Создать страницу или базу внутри базы знаний | 1 — делает и показывает | запись | обратимо | по умолчанию | Показать отдельной строкой |
-| Переписать поле, заполненное владельцем | 0 — предлагает | изменение | частично | по умолчанию | Кроме инвалидации по §3 |
-| Изменить конституцию | 0 — предлагает | изменение | частично | по умолчанию | Только по протоколу §13 |
-| Удалить страницу, базу или строку | ⛔ никогда | удаление | необратимо | по умолчанию | Удаляет только владелец руками |
-| Любое действие в сервисе вне Notion | 0 — предлагает | вне Notion | частично | по умолчанию | Вопрос через 📮 Очередь решений |
-| Повысить собственный уровень в этом реестре | ⛔ никогда | изменение | необратимо | по умолчанию | Уровень поднимает только владелец |
+This is a deliberately cautious starting setup. Only the user raises levels
+from here.
 
-## Шаг 11. Первый день
+## Step 12. The first day
 
-Создай в 🗓️ Журнале карточку сегодняшнего дня: `Дата` = YYYY-MM-DD,
-`День` = сегодня, `Тип` = «день». К ней будут привязываться первые факты.
+Create a card for today in the 🗓️ Journal base: the title field = YYYY-MM-DD,
+the date field = today, the type field = the "day" option in LANG. The first
+facts will attach to it.
 
-## Шаг 12. Отчёт и бутлоадер
+## Step 13. Report and bootloader
 
-Выведи пользователю:
+Show the user, in LANG:
 
-1. Одну строку итога: сколько баз создано, сколько связей, что не удалось.
-2. Ссылку на 🧠 База знаний и на 📜 Конституцию памяти.
-3. Готовый текст бутлоадера — блоком, который можно скопировать целиком.
-   Возьми его из конца конституции (раздел «Бутлоадер») с уже подставленным
-   PAGE_CONSTITUTION.
-4. Одну строку о том, куда его вставить: в настройки агента — то поле, где
-   хранится постоянная инструкция (в Claude это «Персональные настройки»
-   или системный промпт проекта).
-5. Предложение настроить автообновление — регламент лежит в BASE/update.txt,
-   как включить, описано на странице шаблона в разделе «Обновления».
+1. One summary line: how many bases were created, how many relations, what
+   failed.
+2. Links to the knowledge base hub and to the constitution.
+3. The ready bootloader text — as a block that can be copied whole. Take it
+   from the end of the constitution (the bootloader section) with
+   PAGE_CONSTITUTION already substituted.
+4. One line on where to paste it: into the agent's settings — the field that
+   holds its standing instruction (in Claude, personal preferences or the
+   project instructions).
+5. An offer to set up auto-updates — the procedure is at BASE/update.txt, and
+   how to schedule it is described on the template's Updates page.
 
-На этом установка закончена. Ничего больше не делай без просьбы.
+The installation ends here. Do nothing further without being asked.

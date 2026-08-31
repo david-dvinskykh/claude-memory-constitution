@@ -1,8 +1,19 @@
 {
-  "$comment": "Проверено на живом Notion MCP 2026-08-31. Машиночитаемая спецификация структуры памяти. Плейсхолдеры вида [ID:key] заменяются на data_source_id базы с этим key, полученный при её создании. Самосвязь и DUAL-связь создают обе стороны одним statement — второй не нужен.",
+  "$comment": "Проверено на живом Notion MCP. Машиночитаемая спецификация структуры памяти. Плейсхолдеры вида [ID:key] заменяются на data_source_id базы с этим key, полученный при её создании. Самосвязь и DUAL-связь создают обе стороны одним statement — второй не нужен. Названия баз, полей и значений локализованы: при установке берётся ветка выбранного языка.",
+  "spec_format": "2",
   "schema_version": "1",
-  "template_version": "1.0.0",
-  "language": "ru",
+  "template_version": "1.1.0",
+  "languages": [
+    "ru",
+    "uk",
+    "en"
+  ],
+  "language_names": {
+    "ru": "Русский",
+    "uk": "Українська",
+    "en": "English"
+  },
+  "default_language": "en",
   "order": [
     "pages.root",
     "pages.cardfile",
@@ -14,328 +25,1044 @@
   "pages": [
     {
       "key": "root",
-      "title": "🧠 База знаний",
-      "icon": "🧠",
       "parent": null,
-      "note": "Хаб. Создаётся первым, все базы и страницы — под ним."
+      "title": {
+        "ru": "🧠 База знаний",
+        "uk": "🧠 База знань",
+        "en": "🧠 Knowledge base"
+      },
+      "note": {
+        "ru": "Хаб. Создаётся первым, все базы и страницы — под ним.",
+        "uk": "Хаб. Створюється першим, усі бази та сторінки — під ним.",
+        "en": "The hub. Created first; every base and page lives under it."
+      },
+      "body": {
+        "ru": "База знаний агента. Сущности — базы данных, остальное — страницы. Точка входа — 🧭 Индекс, рабочая инструкция — 📜 Конституция памяти.",
+        "uk": "База знань агента. Сутності — бази даних, решта — сторінки. Точка входу — 🧭 Індекс, робоча інструкція — 📜 Конституція пам’яті.",
+        "en": "The agent’s knowledge base. Entities are databases, everything else is a page. The entry point is the 🧭 Index; the working instruction is the 📜 Memory constitution."
+      }
     },
     {
       "key": "cardfile",
-      "title": "🗃️ Картотека",
-      "icon": "🗃️",
       "parent": "root",
-      "note": "Держит четыре базы документального слоя: Люди, Документы, Дела, Биография."
+      "title": {
+        "ru": "🗃️ Картотека",
+        "uk": "🗃️ Картотека",
+        "en": "🗃️ Card file"
+      },
+      "note": {
+        "ru": "Держит четыре базы документального слоя: Люди, Документы, Дела, Биография.",
+        "uk": "Тримає чотири бази документального шару: Люди, Документи, Справи, Біографія.",
+        "en": "Holds the four documentary-layer bases: People, Documents, Cases, Biography."
+      },
+      "body": {
+        "ru": "Документальный слой: люди, документы, дела, биография.",
+        "uk": "Документальний шар: люди, документи, справи, біографія.",
+        "en": "The documentary layer: people, documents, cases, biography."
+      }
     },
     {
       "key": "constitution",
-      "title": "📜 Конституция памяти",
-      "icon": "📜",
       "parent": "root",
-      "content_url": "spec/constitution.txt",
-      "note": "Рабочая инструкция агента. Плейсхолдеры [ID:*] заменяются на реальные data_source_id."
+      "title": {
+        "ru": "📜 Конституция памяти",
+        "uk": "📜 Конституція пам’яті",
+        "en": "📜 Memory constitution"
+      },
+      "note": {
+        "ru": "Рабочая инструкция агента. Плейсхолдеры [ID:*] заменяются на реальные id.",
+        "uk": "Робоча інструкція агента. Плейсхолдери [ID:*] замінюються на реальні id.",
+        "en": "The agent’s working instruction. The [ID:*] placeholders are replaced with real ids."
+      },
+      "content_url": {
+        "ru": "constitution.ru.txt",
+        "uk": "constitution.uk.txt",
+        "en": "constitution.en.txt"
+      }
     },
     {
       "key": "history",
-      "title": "🕓 История изменений конституции",
-      "icon": "🕓",
       "parent": "constitution",
-      "note": "Таблица правок конституции, новая строка сверху: Дата · Версия · Что изменилось · Основание."
+      "title": {
+        "ru": "🕓 История изменений конституции",
+        "uk": "🕓 Історія змін конституції",
+        "en": "🕓 Constitution change log"
+      },
+      "note": {
+        "ru": "Таблица правок конституции, новая строка сверху: Дата · Версия · Что изменилось · Основание.",
+        "uk": "Таблиця правок конституції, новий рядок згори: Дата · Версія · Що змінилося · Підстава.",
+        "en": "A table of constitution edits, newest row on top: Date · Version · What changed · Why."
+      },
+      "body": {
+        "ru": "Правки конституции, новая строка сверху.",
+        "uk": "Правки конституції, новий рядок згори.",
+        "en": "Constitution edits, newest row on top."
+      }
     },
     {
       "key": "owner",
-      "title": "👤 Владелец",
-      "icon": "👤",
       "parent": "root",
-      "note": "Сводка о владельце базы. Пересобирается строго из актуальных фактов, вручную не пишется."
+      "title": {
+        "ru": "👤 Владелец",
+        "uk": "👤 Власник",
+        "en": "👤 Owner"
+      },
+      "note": {
+        "ru": "Сводка о владельце базы. Пересобирается из актуальных фактов, вручную не пишется.",
+        "uk": "Зведення про власника бази. Перезбирається з чинних фактів, вручну не пишеться.",
+        "en": "A summary of the base’s owner. Rebuilt from current facts, never written by hand."
+      },
+      "body": {
+        "ru": "Сводка о владельце базы. Собирается только из актуальных фактов с доверием «подтверждено» или «вероятно». Ничего не писать сюда руками: чего нет в 🧩 Фактах — того нет и здесь.",
+        "uk": "Зведення про власника бази. Збирається лише з чинних фактів із довірою «підтверджено» або «ймовірно». Нічого не писати сюди руками: чого немає в 🧩 Фактах — того немає й тут.",
+        "en": "A summary of the base’s owner. Assembled only from current facts at trust “confirmed” or “likely”. Write nothing here by hand: what is not in 🧩 Facts is not here either."
+      }
     },
     {
       "key": "index",
-      "title": "🧭 Индекс",
-      "icon": "🧭",
       "parent": "root",
-      "note": "Карта базы: список всех баз со ссылками и одной строкой назначения."
+      "title": {
+        "ru": "🧭 Индекс",
+        "uk": "🧭 Індекс",
+        "en": "🧭 Index"
+      },
+      "note": {
+        "ru": "Карта базы: список всех баз со ссылками и одной строкой назначения.",
+        "uk": "Мапа бази: перелік усіх баз із посиланнями та одним рядком призначення.",
+        "en": "A map of the base: every database with a link and a one-line purpose."
+      },
+      "body": {
+        "ru": "Карта базы. Одна строка на базу: название, зачем она, ссылка.",
+        "uk": "Мапа бази. Один рядок на базу: назва, навіщо вона, посилання.",
+        "en": "A map of the base. One row per database: its name, what it is for, and a link."
+      }
     },
     {
       "key": "updates",
-      "title": "🔄 Обновления шаблона",
-      "icon": "🔄",
       "parent": "root",
-      "note": "Установленная версия шаблона, адрес источника, журнал применённых обновлений."
+      "title": {
+        "ru": "🔄 Обновления шаблона",
+        "uk": "🔄 Оновлення шаблону",
+        "en": "🔄 Template updates"
+      },
+      "note": {
+        "ru": "Установленная версия шаблона, адрес источника, журнал применённых обновлений.",
+        "uk": "Встановлена версія шаблону, адреса джерела, журнал застосованих оновлень.",
+        "en": "The installed template version, the source address, and a log of applied updates."
+      }
     }
   ],
   "databases": [
     {
       "key": "facts",
-      "title": "🧩 Факты",
       "icon": "🧩",
       "parent": "root",
-      "purpose": "Семантический слой: атомарные утверждения с двумя временами, доверием и историей опровержений. Ядро всей памяти.",
-      "ddl": "CREATE TABLE ( \"Утверждение\" TITLE COMMENT 'Одно атомарное проверяемое утверждение', \"Тип\" SELECT('атрибут':blue, 'предпочтение':purple, 'событие':green, 'отношение':orange, 'правило':red, 'намерение':yellow, 'реквизит':brown, 'навык':pink), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange, 'опровергнуто':red), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Ссылка\" URL COMMENT 'Ссылка на первоисточник утверждения', \"Дата события\" DATE COMMENT 'Когда произошло в мире', \"Записано\" CREATED_TIME COMMENT 'Когда попало в базу', \"Подтверждено\" DATE COMMENT 'Когда последний раз проверено по сути', \"Валидно с\" DATE, \"Валидно по\" DATE COMMENT 'Пусто = факт действует', \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Тема\" MULTI_SELECT('работа':blue, 'семья':pink, 'здоровье':green, 'финансы':yellow, 'жильё':brown, 'техника':purple, 'документы':gray, 'обучение':red, 'прочее':default), \"Чувствительно\" CHECKBOX )"
+      "title": {
+        "ru": "🧩 Факты",
+        "uk": "🧩 Факти",
+        "en": "🧩 Facts"
+      },
+      "purpose": {
+        "ru": "Семантический слой: атомарные утверждения с двумя временами, доверием и историей опровержений. Ядро всей памяти.",
+        "uk": "Семантичний шар: атомарні твердження з двома часами, довірою та історією спростувань. Ядро всієї пам’яті.",
+        "en": "Semantic layer: atomic statements with two timestamps, a trust level and a record of what refuted them. The core of the whole memory."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Утверждение\" TITLE COMMENT 'Одно атомарное проверяемое утверждение', \"Тип\" SELECT('атрибут':blue, 'предпочтение':purple, 'событие':green, 'отношение':orange, 'правило':red, 'намерение':yellow, 'реквизит':brown, 'навык':pink), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange, 'опровергнуто':red), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Ссылка\" URL COMMENT 'Ссылка на первоисточник утверждения', \"Дата события\" DATE COMMENT 'Когда произошло в мире', \"Записано\" CREATED_TIME COMMENT 'Когда попало в базу', \"Подтверждено\" DATE COMMENT 'Когда последний раз проверено по сути', \"Валидно с\" DATE, \"Валидно по\" DATE COMMENT 'Пусто = факт действует', \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Тема\" MULTI_SELECT('работа':blue, 'семья':pink, 'здоровье':green, 'финансы':yellow, 'жильё':brown, 'техника':purple, 'документы':gray, 'обучение':red, 'прочее':default), \"Чувствительно\" CHECKBOX )",
+        "uk": "CREATE TABLE ( \"Твердження\" TITLE COMMENT 'Одне атомарне перевірюване твердження', \"Тип\" SELECT('атрибут':blue, 'уподобання':purple, 'подія':green, 'відношення':orange, 'правило':red, 'намір':yellow, 'реквізит':brown, 'навичка':pink), \"Довіра\" SELECT('підтверджено':green, 'ймовірно':yellow, 'припущення':orange, 'спростовано':red), \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Посилання\" URL COMMENT 'Посилання на першоджерело твердження', \"Дата події\" DATE COMMENT 'Коли сталося у світі', \"Записано\" CREATED_TIME COMMENT 'Коли потрапило до бази', \"Підтверджено\" DATE COMMENT 'Коли востаннє перевірено по суті', \"Дійсно з\" DATE, \"Дійсно до\" DATE COMMENT 'Порожньо = факт діє', \"Шар\" SELECT('ядро':red, 'активне':blue, 'архів':gray), \"Тема\" MULTI_SELECT('робота':blue, 'сім’я':pink, 'здоров’я':green, 'фінанси':yellow, 'житло':brown, 'техніка':purple, 'документи':gray, 'навчання':red, 'інше':default), \"Чутливо\" CHECKBOX )",
+        "en": "CREATE TABLE ( \"Statement\" TITLE COMMENT 'One atomic, checkable statement', \"Type\" SELECT('attribute':blue, 'preference':purple, 'event':green, 'relation':orange, 'rule':red, 'intention':yellow, 'identifier':brown, 'skill':pink), \"Trust\" SELECT('confirmed':green, 'likely':yellow, 'assumption':orange, 'refuted':red), \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Link\" URL COMMENT 'Link to the primary source of the statement', \"Event date\" DATE COMMENT 'When it happened in the world', \"Recorded\" CREATED_TIME COMMENT 'When it entered the base', \"Confirmed\" DATE COMMENT 'When it was last verified on the merits', \"Valid from\" DATE, \"Valid until\" DATE COMMENT 'Empty = the fact still holds', \"Layer\" SELECT('core':red, 'active':blue, 'archive':gray), \"Topic\" MULTI_SELECT('work':blue, 'family':pink, 'health':green, 'finance':yellow, 'housing':brown, 'devices':purple, 'documents':gray, 'learning':red, 'other':default), \"Sensitive\" CHECKBOX )"
+      }
     },
     {
       "key": "prefs",
-      "title": "🎛️ Предпочтения",
       "icon": "🎛️",
       "parent": "root",
-      "purpose": "Процедурный слой: правила поведения, выведенные агентом из правок владельца. Растёт сам, без ручного ведения.",
-      "ddl": "CREATE TABLE ( \"Правило\" TITLE COMMENT 'Императивная проверяемая формулировка: делай так / не делай так', \"Область\" SELECT('ответы и формат':blue, 'память и Notion':purple, 'инструменты':gray, 'задачи':orange, 'коммуникация':pink, 'автономность':red, 'прочее':default), \"Триггер\" RICH_TEXT COMMENT 'Условие, при котором правило применяется', \"Источник\" RICH_TEXT COMMENT 'Реплика владельца дословно', \"Ссылка\" URL, \"Замечено\" DATE COMMENT 'Когда правило замечено впервые', \"Подтверждено\" DATE, \"Нарушено\" DATE COMMENT 'Когда агент в последний раз нарушил это правило', \"Подтверждений\" NUMBER, \"Сила\" SELECT('проба':yellow, 'правило':blue, 'закон':green, 'отменено':gray), \"Статус\" SELECT('действует':green, 'кандидат в конституцию':yellow, 'отменено':red) )"
+      "title": {
+        "ru": "🎛️ Предпочтения",
+        "uk": "🎛️ Уподобання",
+        "en": "🎛️ Preferences"
+      },
+      "purpose": {
+        "ru": "Процедурный слой: правила поведения, выведенные агентом из правок владельца. Растёт сам, без ручного ведения.",
+        "uk": "Процедурний шар: правила поведінки, виведені агентом із правок власника. Зростає сам, без ручного ведення.",
+        "en": "Procedural layer: rules of conduct the agent derives from the owner’s corrections. It grows on its own, with no manual upkeep."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Правило\" TITLE COMMENT 'Императивная проверяемая формулировка: делай так / не делай так', \"Область\" SELECT('ответы и формат':blue, 'память и Notion':purple, 'инструменты':gray, 'задачи':orange, 'коммуникация':pink, 'автономность':red, 'прочее':default), \"Триггер\" RICH_TEXT COMMENT 'Условие, при котором правило применяется', \"Источник\" RICH_TEXT COMMENT 'Реплика владельца дословно', \"Ссылка\" URL, \"Замечено\" DATE COMMENT 'Когда правило замечено впервые', \"Подтверждено\" DATE, \"Нарушено\" DATE COMMENT 'Когда агент в последний раз нарушил это правило', \"Подтверждений\" NUMBER, \"Сила\" SELECT('проба':yellow, 'правило':blue, 'закон':green, 'отменено':gray), \"Статус\" SELECT('действует':green, 'кандидат в конституцию':yellow, 'отменено':red) )",
+        "uk": "CREATE TABLE ( \"Правило\" TITLE COMMENT 'Імперативне перевірюване формулювання: роби так / не роби так', \"Царина\" SELECT('відповіді та формат':blue, 'пам’ять і Notion':purple, 'інструменти':gray, 'задачі':orange, 'комунікація':pink, 'автономність':red, 'інше':default), \"Тригер\" RICH_TEXT COMMENT 'Умова, за якої правило застосовується', \"Джерело\" RICH_TEXT COMMENT 'Репліка власника дослівно', \"Посилання\" URL, \"Помічено\" DATE COMMENT 'Коли правило помічено вперше', \"Підтверджено\" DATE, \"Порушено\" DATE COMMENT 'Коли агент востаннє порушив це правило', \"Підтверджень\" NUMBER, \"Сила\" SELECT('проба':yellow, 'правило':blue, 'закон':green, 'скасовано':gray), \"Статус\" SELECT('діє':green, 'кандидат до конституції':yellow, 'скасовано':red) )",
+        "en": "CREATE TABLE ( \"Rule\" TITLE COMMENT 'An imperative, checkable wording: do this / never do this', \"Area\" SELECT('answers and format':blue, 'memory and Notion':purple, 'tools':gray, 'tasks':orange, 'communication':pink, 'autonomy':red, 'other':default), \"Trigger\" RICH_TEXT COMMENT 'The condition under which the rule applies', \"Source\" RICH_TEXT COMMENT 'The owner’s own words, verbatim', \"Link\" URL, \"Noticed\" DATE COMMENT 'When the rule was first noticed', \"Confirmed\" DATE, \"Broken\" DATE COMMENT 'When the agent last broke this rule', \"Confirmations\" NUMBER, \"Strength\" SELECT('trial':yellow, 'rule':blue, 'law':green, 'revoked':gray), \"Status\" SELECT('active':green, 'constitution candidate':yellow, 'revoked':red) )"
+      }
     },
     {
       "key": "people",
-      "title": "👥 Люди",
       "icon": "👥",
       "parent": "cardfile",
-      "purpose": "Сущности: ровно одна карточка на человека, в ней все его данные. Второго профиля не заводить.",
-      "ddl": "CREATE TABLE ( \"Имя\" TITLE, \"Полное имя\" RICH_TEXT COMMENT 'Как записан в документе-первоисточнике, на языке оригинала', \"Имя (родной язык)\" RICH_TEXT, \"Имя (латиницей)\" RICH_TEXT COMMENT 'SURNAME Name — как в проездном документе', \"Псевдонимы\" RICH_TEXT COMMENT 'Все варианты написания и обращения, через запятую', \"Отношение\" RICH_TEXT COMMENT 'Кем приходится владельцу базы', \"Дата рождения\" DATE, \"Место рождения\" RICH_TEXT, \"Гражданство\" RICH_TEXT, \"Идентификаторы\" RICH_TEXT COMMENT 'Номера, присвоенные государством или организацией — по одному на строку, с названием', \"Адрес\" RICH_TEXT, \"Контакты\" RICH_TEXT COMMENT 'По одному каналу на строку, с пометкой канала', \"Здоровье\" RICH_TEXT COMMENT 'Диагнозы, аллергии, наблюдения', \"Сводка\" RICH_TEXT COMMENT 'Кто это, чем занимается, что важно помнить', \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Чувствительно\" CHECKBOX, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE, \"Проверено\" DATE COMMENT 'Когда последний раз сверяли реквизиты с оригиналом' )"
+      "title": {
+        "ru": "👥 Люди",
+        "uk": "👥 Люди",
+        "en": "👥 People"
+      },
+      "purpose": {
+        "ru": "Сущности: ровно одна карточка на человека, в ней все его данные. Второго профиля не заводить.",
+        "uk": "Сутності: рівно одна картка на людину, у ній усі її дані. Другого профілю не заводити.",
+        "en": "Entities: exactly one card per person, holding everything about them. Never start a second profile."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Имя\" TITLE, \"Полное имя\" RICH_TEXT COMMENT 'Как записан в документе-первоисточнике, на языке оригинала', \"Имя (родной язык)\" RICH_TEXT, \"Имя (латиницей)\" RICH_TEXT COMMENT 'SURNAME Name — как в проездном документе', \"Псевдонимы\" RICH_TEXT COMMENT 'Все варианты написания и обращения, через запятую', \"Отношение\" RICH_TEXT COMMENT 'Кем приходится владельцу базы', \"Дата рождения\" DATE, \"Место рождения\" RICH_TEXT, \"Гражданство\" RICH_TEXT, \"Идентификаторы\" RICH_TEXT COMMENT 'Номера, присвоенные государством или организацией — по одному на строку, с названием', \"Адрес\" RICH_TEXT, \"Контакты\" RICH_TEXT COMMENT 'По одному каналу на строку, с пометкой канала', \"Здоровье\" RICH_TEXT COMMENT 'Диагнозы, аллергии, наблюдения', \"Сводка\" RICH_TEXT COMMENT 'Кто это, чем занимается, что важно помнить', \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Чувствительно\" CHECKBOX, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE, \"Проверено\" DATE COMMENT 'Когда последний раз сверяли реквизиты с оригиналом' )",
+        "uk": "CREATE TABLE ( \"Ім’я\" TITLE, \"Повне ім’я\" RICH_TEXT COMMENT 'Як записано в документі-першоджерелі, мовою оригіналу', \"Ім’я (рідна мова)\" RICH_TEXT, \"Ім’я (латиницею)\" RICH_TEXT COMMENT 'SURNAME Name — як у проїзному документі', \"Псевдоніми\" RICH_TEXT COMMENT 'Усі варіанти написання й звертання, через кому', \"Стосунок\" RICH_TEXT COMMENT 'Ким доводиться власнику бази', \"Дата народження\" DATE, \"Місце народження\" RICH_TEXT, \"Громадянство\" RICH_TEXT, \"Ідентифікатори\" RICH_TEXT COMMENT 'Номери, надані державою чи організацією — по одному в рядку, з назвою', \"Адреса\" RICH_TEXT, \"Контакти\" RICH_TEXT COMMENT 'По одному каналу в рядку, з позначкою каналу', \"Здоров’я\" RICH_TEXT COMMENT 'Діагнози, алергії, спостереження', \"Зведення\" RICH_TEXT COMMENT 'Хто це, чим займається, що важливо пам’ятати', \"Шар\" SELECT('ядро':red, 'активне':blue, 'архів':gray), \"Довіра\" SELECT('підтверджено':green, 'ймовірно':yellow, 'припущення':orange), \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Першоджерело\" URL, \"Чутливо\" CHECKBOX, \"Створено\" DATE, \"Оновлено\" DATE, \"Підтверджено\" DATE, \"Звірено\" DATE COMMENT 'Коли востаннє звіряли реквізити з оригіналом' )",
+        "en": "CREATE TABLE ( \"Name\" TITLE, \"Full name\" RICH_TEXT COMMENT 'As written in the source document, in the original language', \"Name (native script)\" RICH_TEXT, \"Name (Latin)\" RICH_TEXT COMMENT 'SURNAME Name — as in the travel document', \"Aliases\" RICH_TEXT COMMENT 'Every spelling and form of address, comma-separated', \"Relationship\" RICH_TEXT COMMENT 'How they relate to the owner of the base', \"Date of birth\" DATE, \"Place of birth\" RICH_TEXT, \"Citizenship\" RICH_TEXT, \"Identifiers\" RICH_TEXT COMMENT 'Numbers issued by a state or an organisation — one per line, each labelled', \"Address\" RICH_TEXT, \"Contacts\" RICH_TEXT COMMENT 'One channel per line, each labelled', \"Health\" RICH_TEXT COMMENT 'Diagnoses, allergies, observations', \"Summary\" RICH_TEXT COMMENT 'Who they are, what they do, what matters to remember', \"Layer\" SELECT('core':red, 'active':blue, 'archive':gray), \"Trust\" SELECT('confirmed':green, 'likely':yellow, 'assumption':orange), \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Primary source\" URL, \"Sensitive\" CHECKBOX, \"Created\" DATE, \"Updated\" DATE, \"Confirmed\" DATE, \"Checked\" DATE COMMENT 'When the details were last checked against the original' )"
+      }
     },
     {
       "key": "orgs",
-      "title": "🏢 Организации",
       "icon": "🏢",
       "parent": "root",
-      "purpose": "Сущности: юридические лица, учреждения, сервисы.",
-      "ddl": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Роль\" RICH_TEXT COMMENT 'Чем организация является для владельца', \"Сводка\" RICH_TEXT, \"Статус\" SELECT('активна':green, 'неактивна':gray, 'архив':brown), \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )"
+      "title": {
+        "ru": "🏢 Организации",
+        "uk": "🏢 Організації",
+        "en": "🏢 Organizations"
+      },
+      "purpose": {
+        "ru": "Сущности: юридические лица, учреждения, сервисы.",
+        "uk": "Сутності: юридичні особи, установи, сервіси.",
+        "en": "Entities: legal entities, institutions, services."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Роль\" RICH_TEXT COMMENT 'Чем организация является для владельца', \"Сводка\" RICH_TEXT, \"Статус\" SELECT('активна':green, 'неактивна':gray, 'архив':brown), \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )",
+        "uk": "CREATE TABLE ( \"Назва\" TITLE, \"Псевдоніми\" RICH_TEXT, \"Роль\" RICH_TEXT COMMENT 'Чим організація є для власника', \"Зведення\" RICH_TEXT, \"Статус\" SELECT('активна':green, 'неактивна':gray, 'архів':brown), \"Шар\" SELECT('ядро':red, 'активне':blue, 'архів':gray), \"Довіра\" SELECT('підтверджено':green, 'ймовірно':yellow, 'припущення':orange), \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Першоджерело\" URL, \"Створено\" DATE, \"Оновлено\" DATE, \"Підтверджено\" DATE )",
+        "en": "CREATE TABLE ( \"Name\" TITLE, \"Aliases\" RICH_TEXT, \"Role\" RICH_TEXT COMMENT 'What the organisation is to the owner', \"Summary\" RICH_TEXT, \"Status\" SELECT('active':green, 'inactive':gray, 'archived':brown), \"Layer\" SELECT('core':red, 'active':blue, 'archive':gray), \"Trust\" SELECT('confirmed':green, 'likely':yellow, 'assumption':orange), \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Primary source\" URL, \"Created\" DATE, \"Updated\" DATE, \"Confirmed\" DATE )"
+      }
     },
     {
       "key": "places",
-      "title": "📍 Места",
       "icon": "📍",
       "parent": "root",
-      "purpose": "Сущности: адреса, здания, города, точки на карте.",
-      "ddl": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Адрес\" RICH_TEXT, \"Координаты\" RICH_TEXT COMMENT 'lat,lon — для разрешения дублей по близости', \"Сводка\" RICH_TEXT, \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Чувствительно\" CHECKBOX COMMENT 'Приватный адрес — не выносить в открытые сводки', \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )"
+      "title": {
+        "ru": "📍 Места",
+        "uk": "📍 Місця",
+        "en": "📍 Places"
+      },
+      "purpose": {
+        "ru": "Сущности: адреса, здания, города, точки на карте.",
+        "uk": "Сутності: адреси, будівлі, міста, точки на мапі.",
+        "en": "Entities: addresses, buildings, cities, points on a map."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Адрес\" RICH_TEXT, \"Координаты\" RICH_TEXT COMMENT 'lat,lon — для разрешения дублей по близости', \"Сводка\" RICH_TEXT, \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Чувствительно\" CHECKBOX COMMENT 'Приватный адрес — не выносить в открытые сводки', \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )",
+        "uk": "CREATE TABLE ( \"Назва\" TITLE, \"Псевдоніми\" RICH_TEXT, \"Адреса\" RICH_TEXT, \"Координати\" RICH_TEXT COMMENT 'lat,lon — для розрізнення дублів за близькістю', \"Зведення\" RICH_TEXT, \"Шар\" SELECT('ядро':red, 'активне':blue, 'архів':gray), \"Довіра\" SELECT('підтверджено':green, 'ймовірно':yellow, 'припущення':orange), \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Першоджерело\" URL, \"Чутливо\" CHECKBOX COMMENT 'Приватна адреса — не виносити у відкриті зведення', \"Створено\" DATE, \"Оновлено\" DATE, \"Підтверджено\" DATE )",
+        "en": "CREATE TABLE ( \"Name\" TITLE, \"Aliases\" RICH_TEXT, \"Address\" RICH_TEXT, \"Coordinates\" RICH_TEXT COMMENT 'lat,lon — for resolving duplicates by proximity', \"Summary\" RICH_TEXT, \"Layer\" SELECT('core':red, 'active':blue, 'archive':gray), \"Trust\" SELECT('confirmed':green, 'likely':yellow, 'assumption':orange), \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Primary source\" URL, \"Sensitive\" CHECKBOX COMMENT 'A private address — never surface it in shared summaries', \"Created\" DATE, \"Updated\" DATE, \"Confirmed\" DATE )"
+      }
     },
     {
       "key": "things",
-      "title": "📦 Объекты",
       "icon": "📦",
       "parent": "root",
-      "purpose": "Сущности: вещи, техника, транспорт, животные — всё, о чём накапливаются факты, но что не человек и не место.",
-      "ddl": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Категория\" SELECT('техника':purple, 'транспорт':blue, 'жильё':brown, 'мебель':orange, 'животное':pink, 'прочее':default), \"Сводка\" RICH_TEXT, \"Последнее событие\" DATE COMMENT 'Когда с объектом последний раз что-то происходило', \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )"
+      "title": {
+        "ru": "📦 Объекты",
+        "uk": "📦 Об’єкти",
+        "en": "📦 Things"
+      },
+      "purpose": {
+        "ru": "Сущности: вещи, техника, транспорт, животные — всё, о чём накапливаются факты, но что не человек и не место.",
+        "uk": "Сутності: речі, техніка, транспорт, тварини — усе, про що накопичуються факти, але що не людина і не місце.",
+        "en": "Entities: possessions, devices, vehicles, animals — anything facts accumulate about that is neither a person nor a place."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Категория\" SELECT('техника':purple, 'транспорт':blue, 'жильё':brown, 'мебель':orange, 'животное':pink, 'прочее':default), \"Сводка\" RICH_TEXT, \"Последнее событие\" DATE COMMENT 'Когда с объектом последний раз что-то происходило', \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )",
+        "uk": "CREATE TABLE ( \"Назва\" TITLE, \"Псевдоніми\" RICH_TEXT, \"Категорія\" SELECT('техніка':purple, 'транспорт':blue, 'житло':brown, 'меблі':orange, 'тварина':pink, 'інше':default), \"Зведення\" RICH_TEXT, \"Остання подія\" DATE COMMENT 'Коли з об’єктом востаннє щось відбувалося', \"Шар\" SELECT('ядро':red, 'активне':blue, 'архів':gray), \"Довіра\" SELECT('підтверджено':green, 'ймовірно':yellow, 'припущення':orange), \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Першоджерело\" URL, \"Створено\" DATE, \"Оновлено\" DATE, \"Підтверджено\" DATE )",
+        "en": "CREATE TABLE ( \"Name\" TITLE, \"Aliases\" RICH_TEXT, \"Category\" SELECT('devices':purple, 'vehicles':blue, 'housing':brown, 'furniture':orange, 'animal':pink, 'other':default), \"Summary\" RICH_TEXT, \"Last event\" DATE COMMENT 'When something last happened to this thing', \"Layer\" SELECT('core':red, 'active':blue, 'archive':gray), \"Trust\" SELECT('confirmed':green, 'likely':yellow, 'assumption':orange), \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Primary source\" URL, \"Created\" DATE, \"Updated\" DATE, \"Confirmed\" DATE )"
+      }
     },
     {
       "key": "projects",
-      "title": "📅 Проекты",
       "icon": "📅",
       "parent": "root",
-      "purpose": "Сущности: начинания с началом и концом.",
-      "ddl": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Суть\" RICH_TEXT, \"Статус\" SELECT('активен':green, 'приостановлен':yellow, 'завершён':blue, 'архив':gray), \"Срок\" DATE, \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )"
+      "title": {
+        "ru": "📅 Проекты",
+        "uk": "📅 Проєкти",
+        "en": "📅 Projects"
+      },
+      "purpose": {
+        "ru": "Сущности: начинания с началом и концом.",
+        "uk": "Сутності: починання з початком і кінцем.",
+        "en": "Entities: undertakings with a beginning and an end."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Суть\" RICH_TEXT, \"Статус\" SELECT('активен':green, 'приостановлен':yellow, 'завершён':blue, 'архив':gray), \"Срок\" DATE, \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )",
+        "uk": "CREATE TABLE ( \"Назва\" TITLE, \"Псевдоніми\" RICH_TEXT, \"Суть\" RICH_TEXT, \"Статус\" SELECT('активний':green, 'призупинений':yellow, 'завершений':blue, 'архів':gray), \"Строк\" DATE, \"Шар\" SELECT('ядро':red, 'активне':blue, 'архів':gray), \"Довіра\" SELECT('підтверджено':green, 'ймовірно':yellow, 'припущення':orange), \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Першоджерело\" URL, \"Створено\" DATE, \"Оновлено\" DATE, \"Підтверджено\" DATE )",
+        "en": "CREATE TABLE ( \"Name\" TITLE, \"Aliases\" RICH_TEXT, \"Gist\" RICH_TEXT, \"Status\" SELECT('active':green, 'paused':yellow, 'done':blue, 'archived':gray), \"Due\" DATE, \"Layer\" SELECT('core':red, 'active':blue, 'archive':gray), \"Trust\" SELECT('confirmed':green, 'likely':yellow, 'assumption':orange), \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Primary source\" URL, \"Created\" DATE, \"Updated\" DATE, \"Confirmed\" DATE )"
+      }
     },
     {
       "key": "processes",
-      "title": "⚙️ Процессы",
       "icon": "⚙️",
       "parent": "root",
-      "purpose": "Процедурный слой: регламенты и инструкции, которые агент исполняет. Версионируются, не удаляются.",
-      "ddl": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Назначение\" RICH_TEXT COMMENT 'Что процедура делает и когда запускается', \"Версия\" NUMBER, \"Статус процедуры\" SELECT('черновик':yellow, 'проверен':green, 'устарел':gray), \"Теги\" MULTI_SELECT('процесс':red, 'мета':gray, 'навык':blue), \"Создано\" DATE, \"Обновлено\" DATE, \"Проверено\" DATE )"
+      "title": {
+        "ru": "⚙️ Процессы",
+        "uk": "⚙️ Процеси",
+        "en": "⚙️ Processes"
+      },
+      "purpose": {
+        "ru": "Процедурный слой: регламенты и инструкции, которые агент исполняет. Версионируются, не удаляются.",
+        "uk": "Процедурний шар: регламенти та інструкції, які агент виконує. Версіонуються, не видаляються.",
+        "en": "Procedural layer: the standing procedures the agent carries out. Versioned, never deleted."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Назначение\" RICH_TEXT COMMENT 'Что процедура делает и когда запускается', \"Версия\" NUMBER, \"Статус процедуры\" SELECT('черновик':yellow, 'проверен':green, 'устарел':gray), \"Теги\" MULTI_SELECT('процесс':red, 'мета':gray, 'навык':blue), \"Создано\" DATE, \"Обновлено\" DATE, \"Проверено\" DATE )",
+        "uk": "CREATE TABLE ( \"Назва\" TITLE, \"Псевдоніми\" RICH_TEXT, \"Призначення\" RICH_TEXT COMMENT 'Що процедура робить і коли запускається', \"Версія\" NUMBER, \"Статус процедури\" SELECT('чернетка':yellow, 'перевірений':green, 'застарілий':gray), \"Теги\" MULTI_SELECT('процес':red, 'мета':gray, 'навичка':blue), \"Створено\" DATE, \"Оновлено\" DATE, \"Перевірено\" DATE )",
+        "en": "CREATE TABLE ( \"Name\" TITLE, \"Aliases\" RICH_TEXT, \"Purpose\" RICH_TEXT COMMENT 'What the procedure does and when it runs', \"Version\" NUMBER, \"Procedure status\" SELECT('draft':yellow, 'verified':green, 'obsolete':gray), \"Tags\" MULTI_SELECT('process':red, 'meta':gray, 'skill':blue), \"Created\" DATE, \"Updated\" DATE, \"Checked\" DATE )"
+      }
     },
     {
       "key": "ideas",
-      "title": "💡 Идеи",
       "icon": "💡",
       "parent": "root",
-      "purpose": "Сущности: замыслы и разборы, которые ещё не стали проектом.",
-      "ddl": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Суть\" RICH_TEXT, \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )"
+      "title": {
+        "ru": "💡 Идеи",
+        "uk": "💡 Ідеї",
+        "en": "💡 Ideas"
+      },
+      "purpose": {
+        "ru": "Сущности: замыслы и разборы, которые ещё не стали проектом.",
+        "uk": "Сутності: задуми та розбори, які ще не стали проєктом.",
+        "en": "Entities: notions and analyses that have not become a project yet."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Название\" TITLE, \"Псевдонимы\" RICH_TEXT, \"Суть\" RICH_TEXT, \"Слой\" SELECT('ядро':red, 'активное':blue, 'архив':gray), \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Первоисточник\" URL, \"Создано\" DATE, \"Обновлено\" DATE, \"Подтверждено\" DATE )",
+        "uk": "CREATE TABLE ( \"Назва\" TITLE, \"Псевдоніми\" RICH_TEXT, \"Суть\" RICH_TEXT, \"Шар\" SELECT('ядро':red, 'активне':blue, 'архів':gray), \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Першоджерело\" URL, \"Створено\" DATE, \"Оновлено\" DATE, \"Підтверджено\" DATE )",
+        "en": "CREATE TABLE ( \"Name\" TITLE, \"Aliases\" RICH_TEXT, \"Gist\" RICH_TEXT, \"Layer\" SELECT('core':red, 'active':blue, 'archive':gray), \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Primary source\" URL, \"Created\" DATE, \"Updated\" DATE, \"Confirmed\" DATE )"
+      }
     },
     {
       "key": "journal",
-      "title": "🗓️ Журнал",
       "icon": "🗓️",
       "parent": "root",
-      "purpose": "Эпизодический слой: что произошло. Точка, к которой привязывается каждый факт.",
-      "ddl": "CREATE TABLE ( \"Дата\" TITLE COMMENT 'YYYY-MM-DD — одна карточка на день', \"День\" DATE, \"Тип\" SELECT('день':blue, 'ревизия':purple), \"Итоги\" RICH_TEXT, \"Настроение\" RICH_TEXT, \"Энергия\" RICH_TEXT, \"Разобран\" CHECKBOX )"
+      "title": {
+        "ru": "🗓️ Журнал",
+        "uk": "🗓️ Журнал",
+        "en": "🗓️ Journal"
+      },
+      "purpose": {
+        "ru": "Эпизодический слой: что произошло. Точка, к которой привязывается каждый факт.",
+        "uk": "Епізодичний шар: що сталося. Точка, до якої прив’язується кожен факт.",
+        "en": "Episodic layer: what happened. The anchor every fact is tied to."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Дата\" TITLE COMMENT 'YYYY-MM-DD — одна карточка на день', \"День\" DATE, \"Тип\" SELECT('день':blue, 'ревизия':purple), \"Итоги\" RICH_TEXT, \"Настроение\" RICH_TEXT, \"Энергия\" RICH_TEXT, \"Разобран\" CHECKBOX )",
+        "uk": "CREATE TABLE ( \"Дата\" TITLE COMMENT 'YYYY-MM-DD — одна картка на день', \"День\" DATE, \"Тип\" SELECT('день':blue, 'ревізія':purple), \"Підсумки\" RICH_TEXT, \"Настрій\" RICH_TEXT, \"Енергія\" RICH_TEXT, \"Розібрано\" CHECKBOX )",
+        "en": "CREATE TABLE ( \"Date\" TITLE COMMENT 'YYYY-MM-DD — one card per day', \"Day\" DATE, \"Type\" SELECT('day':blue, 'review':purple), \"Outcome\" RICH_TEXT, \"Mood\" RICH_TEXT, \"Energy\" RICH_TEXT, \"Processed\" CHECKBOX )"
+      }
     },
     {
       "key": "docs",
-      "title": "🗃️ Документы",
       "icon": "🗃️",
       "parent": "cardfile",
-      "purpose": "Документальный слой: одна карточка = один реальный документ. Продление — новая карточка, старая остаётся.",
-      "ddl": "CREATE TABLE ( \"Документ\" TITLE, \"Вид\" SELECT('удостоверение личности':blue, 'проездной документ':blue, 'вид на жительство':green, 'водительское удостоверение':purple, 'свидетельство о рождении':pink, 'свидетельство о браке':pink, 'свидетельство о смерти':gray, 'справка':default, 'договор':orange, 'страховой полис':yellow, 'документ на транспорт':purple, 'доверенность':red, 'налоговый документ':brown, 'налоговый идентификатор':gray, 'диплом или сертификат':default, 'медицинский документ':green, 'нотариальный документ':red, 'прочее':default), \"Номер\" RICH_TEXT COMMENT 'Серия и номер полностью', \"Кем выдан\" RICH_TEXT, \"Страна\" RICH_TEXT, \"Выдан\" DATE, \"Действует до\" DATE, \"Статус\" SELECT('действует':green, 'бессрочный':blue, 'истекает':yellow, 'просрочен':red, 'заменён':gray, 'утрачен':orange, 'архив':default), \"Где оригинал\" RICH_TEXT, \"Ссылка\" URL COMMENT 'Прямая ссылка на скан во внешнем хранилище', \"Заметки\" RICH_TEXT, \"Проверено\" DATE COMMENT 'Когда последний раз сверяли с оригиналом', \"Обновлено\" LAST_EDITED_TIME, \"Чувствительно\" CHECKBOX )"
+      "title": {
+        "ru": "🗃️ Документы",
+        "uk": "🗃️ Документи",
+        "en": "🗃️ Documents"
+      },
+      "purpose": {
+        "ru": "Документальный слой: одна карточка = один реальный документ. Продление — новая карточка, старая остаётся.",
+        "uk": "Документальний шар: одна картка = один реальний документ. Продовження — нова картка, стара залишається.",
+        "en": "Documentary layer: one card = one real document. A renewal is a new card; the old one stays."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Документ\" TITLE, \"Вид\" SELECT('удостоверение личности':blue, 'проездной документ':blue, 'вид на жительство':green, 'водительское удостоверение':purple, 'свидетельство о рождении':pink, 'свидетельство о браке':pink, 'свидетельство о смерти':gray, 'справка':default, 'договор':orange, 'страховой полис':yellow, 'документ на транспорт':purple, 'доверенность':red, 'налоговый документ':brown, 'налоговый идентификатор':gray, 'диплом или сертификат':default, 'медицинский документ':green, 'нотариальный документ':red, 'прочее':default), \"Номер\" RICH_TEXT COMMENT 'Серия и номер полностью', \"Кем выдан\" RICH_TEXT, \"Страна\" RICH_TEXT, \"Выдан\" DATE, \"Действует до\" DATE, \"Статус\" SELECT('действует':green, 'бессрочный':blue, 'истекает':yellow, 'просрочен':red, 'заменён':gray, 'утрачен':orange, 'архив':default), \"Где оригинал\" RICH_TEXT, \"Ссылка\" URL COMMENT 'Прямая ссылка на скан во внешнем хранилище', \"Заметки\" RICH_TEXT, \"Проверено\" DATE COMMENT 'Когда последний раз сверяли с оригиналом', \"Обновлено\" LAST_EDITED_TIME, \"Чувствительно\" CHECKBOX )",
+        "uk": "CREATE TABLE ( \"Документ\" TITLE, \"Вид\" SELECT('посвідчення особи':blue, 'проїзний документ':blue, 'посвідка на проживання':green, 'посвідчення водія':purple, 'свідоцтво про народження':pink, 'свідоцтво про шлюб':pink, 'свідоцтво про смерть':gray, 'довідка':default, 'договір':orange, 'страховий поліс':yellow, 'документ на транспорт':purple, 'довіреність':red, 'податковий документ':brown, 'податковий ідентифікатор':gray, 'диплом або сертифікат':default, 'медичний документ':green, 'нотаріальний документ':red, 'інше':default), \"Номер\" RICH_TEXT COMMENT 'Серія і номер повністю', \"Ким видано\" RICH_TEXT, \"Країна\" RICH_TEXT, \"Видано\" DATE, \"Дійсний до\" DATE, \"Статус\" SELECT('діє':green, 'безстроковий':blue, 'спливає':yellow, 'прострочений':red, 'замінений':gray, 'втрачений':orange, 'архів':default), \"Де оригінал\" RICH_TEXT, \"Посилання\" URL COMMENT 'Пряме посилання на скан у зовнішньому сховищі', \"Нотатки\" RICH_TEXT, \"Звірено\" DATE COMMENT 'Коли востаннє звіряли з оригіналом', \"Оновлено\" LAST_EDITED_TIME, \"Чутливо\" CHECKBOX )",
+        "en": "CREATE TABLE ( \"Document\" TITLE, \"Kind\" SELECT('identity card':blue, 'travel document':blue, 'residence permit':green, 'driving licence':purple, 'birth certificate':pink, 'marriage certificate':pink, 'death certificate':gray, 'official letter':default, 'contract':orange, 'insurance policy':yellow, 'vehicle document':purple, 'power of attorney':red, 'tax document':brown, 'tax identifier':gray, 'diploma or certificate':default, 'medical record':green, 'notarial deed':red, 'other':default), \"Number\" RICH_TEXT COMMENT 'Series and number in full', \"Issued by\" RICH_TEXT, \"Country\" RICH_TEXT, \"Issued on\" DATE, \"Valid until\" DATE, \"Status\" SELECT('valid':green, 'indefinite':blue, 'expiring':yellow, 'expired':red, 'superseded':gray, 'lost':orange, 'archived':default), \"Where the original is\" RICH_TEXT, \"Link\" URL COMMENT 'Direct link to the scan in external storage', \"Notes\" RICH_TEXT, \"Checked\" DATE COMMENT 'When it was last checked against the original', \"Updated\" LAST_EDITED_TIME, \"Sensitive\" CHECKBOX )"
+      }
     },
     {
       "key": "cases",
-      "title": "📁 Дела",
       "icon": "📁",
       "parent": "cardfile",
-      "purpose": "Документальный слой: зачем бумаги собраны. Сюжет, объединяющий документы, людей и сроки.",
-      "ddl": "CREATE TABLE ( \"Дело\" TITLE, \"Суть\" RICH_TEXT COMMENT 'Одно предложение: о чём дело', \"Сфера\" SELECT('документы':gray, 'жильё':brown, 'транспорт':purple, 'финансы':yellow, 'работа':red, 'здоровье':green, 'семья':pink, 'образование':blue, 'юридическое':orange, 'прочее':default), \"Статус\" SELECT('активно':blue, 'ждём ответа':yellow, 'завершено':green, 'заморожено':gray, 'архив':default), \"Приоритет\" SELECT('высокий':red, 'средний':yellow, 'низкий':gray), \"Открыто\" DATE, \"Ближайший срок\" DATE COMMENT 'Срок, у которого нет своего документа: платёж, запись, подача', \"Следующий шаг\" RICH_TEXT COMMENT 'Что конкретно сделать дальше', \"Чувствительно\" CHECKBOX, \"Обновлено\" LAST_EDITED_TIME )"
+      "title": {
+        "ru": "📁 Дела",
+        "uk": "📁 Справи",
+        "en": "📁 Cases"
+      },
+      "purpose": {
+        "ru": "Документальный слой: зачем бумаги собраны. Сюжет, объединяющий документы, людей и сроки.",
+        "uk": "Документальний шар: навіщо папери зібрані. Сюжет, що об’єднує документи, людей і строки.",
+        "en": "Documentary layer: why the papers were gathered. The storyline binding documents, people and deadlines."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Дело\" TITLE, \"Суть\" RICH_TEXT COMMENT 'Одно предложение: о чём дело', \"Сфера\" SELECT('документы':gray, 'жильё':brown, 'транспорт':purple, 'финансы':yellow, 'работа':red, 'здоровье':green, 'семья':pink, 'образование':blue, 'юридическое':orange, 'прочее':default), \"Статус\" SELECT('активно':blue, 'ждём ответа':yellow, 'завершено':green, 'заморожено':gray, 'архив':default), \"Приоритет\" SELECT('высокий':red, 'средний':yellow, 'низкий':gray), \"Открыто\" DATE, \"Ближайший срок\" DATE COMMENT 'Срок, у которого нет своего документа: платёж, запись, подача', \"Следующий шаг\" RICH_TEXT COMMENT 'Что конкретно сделать дальше', \"Чувствительно\" CHECKBOX, \"Обновлено\" LAST_EDITED_TIME )",
+        "uk": "CREATE TABLE ( \"Справа\" TITLE, \"Суть\" RICH_TEXT COMMENT 'Одне речення: про що справа', \"Сфера\" SELECT('документи':gray, 'житло':brown, 'транспорт':purple, 'фінанси':yellow, 'робота':red, 'здоров’я':green, 'сім’я':pink, 'освіта':blue, 'юридичне':orange, 'інше':default), \"Статус\" SELECT('активна':blue, 'чекаємо відповіді':yellow, 'завершена':green, 'заморожена':gray, 'архів':default), \"Пріоритет\" SELECT('високий':red, 'середній':yellow, 'низький':gray), \"Відкрито\" DATE, \"Найближчий строк\" DATE COMMENT 'Строк, що не має власного документа: платіж, запис, подання', \"Наступний крок\" RICH_TEXT COMMENT 'Що конкретно зробити далі', \"Чутливо\" CHECKBOX, \"Оновлено\" LAST_EDITED_TIME )",
+        "en": "CREATE TABLE ( \"Case\" TITLE, \"Gist\" RICH_TEXT COMMENT 'One sentence: what this case is about', \"Domain\" SELECT('documents':gray, 'housing':brown, 'vehicles':purple, 'finance':yellow, 'work':red, 'health':green, 'family':pink, 'education':blue, 'legal':orange, 'other':default), \"Status\" SELECT('open':blue, 'awaiting reply':yellow, 'closed':green, 'on hold':gray, 'archived':default), \"Priority\" SELECT('high':red, 'medium':yellow, 'low':gray), \"Opened\" DATE, \"Next deadline\" DATE COMMENT 'A deadline with no document of its own: a payment, an appointment, a filing', \"Next step\" RICH_TEXT COMMENT 'Exactly what to do next', \"Sensitive\" CHECKBOX, \"Updated\" LAST_EDITED_TIME )"
+      }
     },
     {
       "key": "bio",
-      "title": "🧬 Биография",
       "icon": "🧬",
       "parent": "cardfile",
-      "purpose": "Документальный слой: вехи жизни, по возможности с документом-основанием.",
-      "ddl": "CREATE TABLE ( \"Событие\" TITLE, \"Дата\" DATE, \"Вид\" SELECT('рождение':pink, 'брак':pink, 'рождение ребёнка':pink, 'переезд':blue, 'смена статуса':green, 'образование':purple, 'работа':red, 'здоровье':green, 'имущество':brown, 'утрата':gray, 'поездка':yellow, 'финансы':orange, 'прочее':default), \"Описание\" RICH_TEXT, \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Чувствительно\" CHECKBOX )"
+      "title": {
+        "ru": "🧬 Биография",
+        "uk": "🧬 Біографія",
+        "en": "🧬 Biography"
+      },
+      "purpose": {
+        "ru": "Документальный слой: вехи жизни, по возможности с документом-основанием.",
+        "uk": "Документальний шар: віхи життя, за можливості з документом-підставою.",
+        "en": "Documentary layer: life milestones, with a source document wherever possible."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Событие\" TITLE, \"Дата\" DATE, \"Вид\" SELECT('рождение':pink, 'брак':pink, 'рождение ребёнка':pink, 'переезд':blue, 'смена статуса':green, 'образование':purple, 'работа':red, 'здоровье':green, 'имущество':brown, 'утрата':gray, 'поездка':yellow, 'финансы':orange, 'прочее':default), \"Описание\" RICH_TEXT, \"Доверие\" SELECT('подтверждено':green, 'вероятно':yellow, 'предположение':orange), \"Чувствительно\" CHECKBOX )",
+        "uk": "CREATE TABLE ( \"Подія\" TITLE, \"Дата\" DATE, \"Вид\" SELECT('народження':pink, 'шлюб':pink, 'народження дитини':pink, 'переїзд':blue, 'зміна статусу':green, 'освіта':purple, 'робота':red, 'здоров’я':green, 'майно':brown, 'втрата':gray, 'подорож':yellow, 'фінанси':orange, 'інше':default), \"Опис\" RICH_TEXT, \"Довіра\" SELECT('підтверджено':green, 'ймовірно':yellow, 'припущення':orange), \"Чутливо\" CHECKBOX )",
+        "en": "CREATE TABLE ( \"Event\" TITLE, \"Date\" DATE, \"Kind\" SELECT('birth':pink, 'marriage':pink, 'child born':pink, 'relocation':blue, 'status change':green, 'education':purple, 'work':red, 'health':green, 'property':brown, 'loss':gray, 'travel':yellow, 'finance':orange, 'other':default), \"Description\" RICH_TEXT, \"Trust\" SELECT('confirmed':green, 'likely':yellow, 'assumption':orange), \"Sensitive\" CHECKBOX )"
+      }
     },
     {
       "key": "powers",
-      "title": "⚖️ Полномочия",
       "icon": "⚖️",
       "parent": "root",
-      "purpose": "Реестр того, что агент делает сам, а что только предлагает. Молчание реестра = уровень 0.",
-      "ddl": "CREATE TABLE ( \"Операция\" TITLE, \"Уровень\" SELECT('0 — предлагает':gray, '1 — делает и показывает':yellow, '2 — делает молча':green, '⛔ никогда':red), \"Область\" SELECT('чтение':gray, 'запись':blue, 'изменение':yellow, 'удаление':red, 'вне Notion':orange), \"Ограничения\" RICH_TEXT COMMENT 'Рамки внутри уровня: пороги, исключения, что всё равно спрашивать', \"Обратимость\" SELECT('обратимо':green, 'частично':yellow, 'необратимо':red), \"Кто разрешил\" SELECT('владелец':green, 'по умолчанию':gray), \"Успехов подряд\" NUMBER COMMENT 'Сколько раз подряд сработало без правки и отката; обнуляется при ошибке', \"Ошибок\" NUMBER, \"Последняя ошибка\" RICH_TEXT, \"Условие повышения\" RICH_TEXT, \"Уровень изменён\" DATE )"
+      "title": {
+        "ru": "⚖️ Полномочия",
+        "uk": "⚖️ Повноваження",
+        "en": "⚖️ Permissions"
+      },
+      "purpose": {
+        "ru": "Реестр того, что агент делает сам, а что только предлагает. Молчание реестра = уровень 0.",
+        "uk": "Реєстр того, що агент робить сам, а що лише пропонує. Мовчання реєстру = рівень 0.",
+        "en": "The register of what the agent does on its own and what it merely proposes. Silence of the register = level 0."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Операция\" TITLE, \"Уровень\" SELECT('0 — предлагает':gray, '1 — делает и показывает':yellow, '2 — делает молча':green, '⛔ никогда':red), \"Область\" SELECT('чтение':gray, 'запись':blue, 'изменение':yellow, 'удаление':red, 'вне Notion':orange), \"Ограничения\" RICH_TEXT COMMENT 'Рамки внутри уровня: пороги, исключения, что всё равно спрашивать', \"Обратимость\" SELECT('обратимо':green, 'частично':yellow, 'необратимо':red), \"Кто разрешил\" SELECT('владелец':green, 'по умолчанию':gray), \"Успехов подряд\" NUMBER COMMENT 'Сколько раз подряд сработало без правки и отката; обнуляется при ошибке', \"Ошибок\" NUMBER, \"Последняя ошибка\" RICH_TEXT, \"Условие повышения\" RICH_TEXT, \"Уровень изменён\" DATE )",
+        "uk": "CREATE TABLE ( \"Операція\" TITLE, \"Рівень\" SELECT('0 — пропонує':gray, '1 — робить і показує':yellow, '2 — робить мовчки':green, '⛔ ніколи':red), \"Царина\" SELECT('читання':gray, 'запис':blue, 'зміна':yellow, 'видалення':red, 'поза Notion':orange), \"Обмеження\" RICH_TEXT COMMENT 'Межі всередині рівня: пороги, винятки, що все одно питати', \"Оборотність\" SELECT('оборотно':green, 'частково':yellow, 'незворотно':red), \"Хто дозволив\" SELECT('власник':green, 'за замовчуванням':gray), \"Успіхів поспіль\" NUMBER COMMENT 'Скільки разів поспіль спрацювало без правки й відкату; обнуляється при помилці', \"Помилок\" NUMBER, \"Остання помилка\" RICH_TEXT, \"Умова підвищення\" RICH_TEXT, \"Рівень змінено\" DATE )",
+        "en": "CREATE TABLE ( \"Operation\" TITLE, \"Level\" SELECT('0 — proposes':gray, '1 — acts and shows':yellow, '2 — acts silently':green, '⛔ never':red), \"Scope\" SELECT('read':gray, 'write':blue, 'modify':yellow, 'delete':red, 'outside Notion':orange), \"Limits\" RICH_TEXT COMMENT 'Bounds inside the level: thresholds, exceptions, what to ask about anyway', \"Reversibility\" SELECT('reversible':green, 'partial':yellow, 'irreversible':red), \"Granted by\" SELECT('owner':green, 'default':gray), \"Successes in a row\" NUMBER COMMENT 'How many times in a row it worked with no edit and no rollback; resets on an error', \"Errors\" NUMBER, \"Last error\" RICH_TEXT, \"Promotion condition\" RICH_TEXT, \"Level changed\" DATE )"
+      }
     },
     {
       "key": "queue",
-      "title": "📮 Очередь решений",
       "icon": "📮",
       "parent": "root",
-      "purpose": "Единственное место, где агент задаёт вопросы о конкретных действиях. Вопрос не растворяется в тексте отчёта.",
-      "ddl": "CREATE TABLE ( \"Вопрос\" TITLE COMMENT 'Одной строкой', \"Номер\" UNIQUE_ID PREFIX 'Q', \"Тип записи\" SELECT('вопрос':yellow, 'действие уровня 1':purple), \"Что сделает система\" RICH_TEXT COMMENT 'Точное действие при ответе «да»', \"Основание\" URL, \"Спрошено\" DATE, \"Отвечено\" DATE, \"Исполнено\" DATE, \"Годно до\" DATE COMMENT 'После этой даты вопрос протухает', \"Ответ владельца\" RICH_TEXT COMMENT 'Дословно', \"Статус\" SELECT('ждёт ответа':yellow, 'да':green, 'нет':red, 'отложено':orange, 'исполнено':blue, 'протухло':gray, 'сделано само':purple, 'откачено':pink), \"Задал\" SELECT('сессия':blue, 'обслуживание':purple) )"
+      "title": {
+        "ru": "📮 Очередь решений",
+        "uk": "📮 Черга рішень",
+        "en": "📮 Decision queue"
+      },
+      "purpose": {
+        "ru": "Единственное место, где агент задаёт вопросы о конкретных действиях. Вопрос не растворяется в тексте отчёта.",
+        "uk": "Єдине місце, де агент ставить питання про конкретні дії. Питання не розчиняється в тексті звіту.",
+        "en": "The one place the agent asks about specific actions. A question never dissolves into the text of a report."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Вопрос\" TITLE COMMENT 'Одной строкой', \"Номер\" UNIQUE_ID PREFIX 'Q', \"Тип записи\" SELECT('вопрос':yellow, 'действие уровня 1':purple), \"Что сделает система\" RICH_TEXT COMMENT 'Точное действие при ответе «да»', \"Основание\" URL, \"Спрошено\" DATE, \"Отвечено\" DATE, \"Исполнено\" DATE, \"Годно до\" DATE COMMENT 'После этой даты вопрос протухает', \"Ответ владельца\" RICH_TEXT COMMENT 'Дословно', \"Статус\" SELECT('ждёт ответа':yellow, 'да':green, 'нет':red, 'отложено':orange, 'исполнено':blue, 'протухло':gray, 'сделано само':purple, 'откачено':pink), \"Задал\" SELECT('сессия':blue, 'обслуживание':purple) )",
+        "uk": "CREATE TABLE ( \"Питання\" TITLE COMMENT 'Одним рядком', \"Номер\" UNIQUE_ID PREFIX 'Q', \"Тип запису\" SELECT('питання':yellow, 'дія рівня 1':purple), \"Що зробить система\" RICH_TEXT COMMENT 'Точна дія в разі відповіді «так»', \"Підстава\" URL, \"Запитано\" DATE, \"Відповідь отримано\" DATE, \"Виконано\" DATE, \"Дійсне до\" DATE COMMENT 'Після цієї дати питання протухає', \"Відповідь власника\" RICH_TEXT COMMENT 'Дослівно', \"Статус\" SELECT('чекає відповіді':yellow, 'так':green, 'ні':red, 'відкладено':orange, 'виконано':blue, 'протухло':gray, 'зроблено само':purple, 'відкочено':pink), \"Хто запитав\" SELECT('сесія':blue, 'обслуговування':purple) )",
+        "en": "CREATE TABLE ( \"Question\" TITLE COMMENT 'One line', \"Number\" UNIQUE_ID PREFIX 'Q', \"Record type\" SELECT('question':yellow, 'level-1 action':purple), \"What the system will do\" RICH_TEXT COMMENT 'The exact action to take on a yes', \"Trigger\" URL, \"Asked\" DATE, \"Answered\" DATE, \"Carried out\" DATE, \"Expires\" DATE COMMENT 'After this date the question goes stale', \"Owner’s answer\" RICH_TEXT COMMENT 'Verbatim', \"Status\" SELECT('awaiting answer':yellow, 'yes':green, 'no':red, 'postponed':orange, 'carried out':blue, 'stale':gray, 'done automatically':purple, 'rolled back':pink), \"Asked by\" SELECT('session':blue, 'maintenance':purple) )"
+      }
     },
     {
       "key": "inbox",
-      "title": "📥 Входящие",
       "icon": "📥",
       "parent": "root",
-      "purpose": "Карантин: сюда идёт то, о чём за секунду не решить, куда писать.",
-      "ddl": "CREATE TABLE ( \"Запись\" TITLE, \"Дата\" DATE, \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Заметки\" RICH_TEXT, \"Статус\" SELECT('новое':red, 'разобрано':green) )"
+      "title": {
+        "ru": "📥 Входящие",
+        "uk": "📥 Вхідні",
+        "en": "📥 Inbox"
+      },
+      "purpose": {
+        "ru": "Карантин: сюда идёт то, о чём за секунду не решить, куда писать.",
+        "uk": "Карантин: сюди йде те, про що за секунду не вирішити, куди писати.",
+        "en": "Quarantine: whatever you cannot place in a second goes here."
+      },
+      "ddl": {
+        "ru": "CREATE TABLE ( \"Запись\" TITLE, \"Дата\" DATE, \"Источник\" SELECT('владелец':green, 'документ':blue, 'вывод агента':gray, 'веб':pink, 'прочее':default), \"Заметки\" RICH_TEXT, \"Статус\" SELECT('новое':red, 'разобрано':green) )",
+        "uk": "CREATE TABLE ( \"Запис\" TITLE, \"Дата\" DATE, \"Джерело\" SELECT('власник':green, 'документ':blue, 'висновок агента':gray, 'веб':pink, 'інше':default), \"Нотатки\" RICH_TEXT, \"Статус\" SELECT('нове':red, 'розібрано':green) )",
+        "en": "CREATE TABLE ( \"Entry\" TITLE, \"Date\" DATE, \"Source\" SELECT('owner':green, 'document':blue, 'agent inference':gray, 'web':pink, 'other':default), \"Notes\" RICH_TEXT, \"Status\" SELECT('new':red, 'processed':green) )"
+      }
     }
   ],
   "relations": [
     {
       "on": "facts",
-      "statements": [
-        "ADD COLUMN \"День\" RELATION('[ID:journal]', DUAL 'Факты')",
-        "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Факты')",
-        "ADD COLUMN \"Организации\" RELATION('[ID:orgs]', DUAL 'Факты')",
-        "ADD COLUMN \"Места\" RELATION('[ID:places]', DUAL 'Факты')",
-        "ADD COLUMN \"Объекты\" RELATION('[ID:things]', DUAL 'Факты')",
-        "ADD COLUMN \"Проекты\" RELATION('[ID:projects]', DUAL 'Факты')",
-        "ADD COLUMN \"Идеи\" RELATION('[ID:ideas]', DUAL 'Факты')",
-        "ADD COLUMN \"Отменяет\" RELATION('[ID:facts]', DUAL 'Отменён чем' 'otmenen_chem')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"День\" RELATION('[ID:journal]', DUAL 'Факты')",
+          "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Факты')",
+          "ADD COLUMN \"Организации\" RELATION('[ID:orgs]', DUAL 'Факты')",
+          "ADD COLUMN \"Места\" RELATION('[ID:places]', DUAL 'Факты')",
+          "ADD COLUMN \"Объекты\" RELATION('[ID:things]', DUAL 'Факты')",
+          "ADD COLUMN \"Проекты\" RELATION('[ID:projects]', DUAL 'Факты')",
+          "ADD COLUMN \"Идеи\" RELATION('[ID:ideas]', DUAL 'Факты')",
+          "ADD COLUMN \"Отменяет\" RELATION('[ID:facts]', DUAL 'Отменён чем' 'superseded_by')"
+        ],
+        "uk": [
+          "ADD COLUMN \"День\" RELATION('[ID:journal]', DUAL 'Факти')",
+          "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Факти')",
+          "ADD COLUMN \"Організації\" RELATION('[ID:orgs]', DUAL 'Факти')",
+          "ADD COLUMN \"Місця\" RELATION('[ID:places]', DUAL 'Факти')",
+          "ADD COLUMN \"Об’єкти\" RELATION('[ID:things]', DUAL 'Факти')",
+          "ADD COLUMN \"Проєкти\" RELATION('[ID:projects]', DUAL 'Факти')",
+          "ADD COLUMN \"Ідеї\" RELATION('[ID:ideas]', DUAL 'Факти')",
+          "ADD COLUMN \"Скасовує\" RELATION('[ID:facts]', DUAL 'Скасовано чим' 'superseded_by')"
+        ],
+        "en": [
+          "ADD COLUMN \"Day\" RELATION('[ID:journal]', DUAL 'Facts')",
+          "ADD COLUMN \"People\" RELATION('[ID:people]', DUAL 'Facts')",
+          "ADD COLUMN \"Organizations\" RELATION('[ID:orgs]', DUAL 'Facts')",
+          "ADD COLUMN \"Places\" RELATION('[ID:places]', DUAL 'Facts')",
+          "ADD COLUMN \"Things\" RELATION('[ID:things]', DUAL 'Facts')",
+          "ADD COLUMN \"Projects\" RELATION('[ID:projects]', DUAL 'Facts')",
+          "ADD COLUMN \"Ideas\" RELATION('[ID:ideas]', DUAL 'Facts')",
+          "ADD COLUMN \"Supersedes\" RELATION('[ID:facts]', DUAL 'Superseded by' 'superseded_by')"
+        ]
+      }
     },
     {
       "on": "prefs",
-      "statements": [
-        "ADD COLUMN \"День\" RELATION('[ID:journal]', DUAL 'Предпочтения')",
-        "ADD COLUMN \"Отменяет\" RELATION('[ID:prefs]', DUAL 'Отменён чем' 'otmenen_chem')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"День\" RELATION('[ID:journal]', DUAL 'Предпочтения')",
+          "ADD COLUMN \"Отменяет\" RELATION('[ID:prefs]', DUAL 'Отменён чем' 'superseded_by')"
+        ],
+        "uk": [
+          "ADD COLUMN \"День\" RELATION('[ID:journal]', DUAL 'Уподобання')",
+          "ADD COLUMN \"Скасовує\" RELATION('[ID:prefs]', DUAL 'Скасовано чим' 'superseded_by')"
+        ],
+        "en": [
+          "ADD COLUMN \"Day\" RELATION('[ID:journal]', DUAL 'Preferences')",
+          "ADD COLUMN \"Supersedes\" RELATION('[ID:prefs]', DUAL 'Superseded by' 'superseded_by')"
+        ]
+      }
     },
     {
       "on": "people",
-      "statements": [
-        "ADD COLUMN \"Родители\" RELATION('[ID:people]', DUAL 'Дети' 'deti')",
-        "ADD COLUMN \"Супруг / партнёр\" RELATION('[ID:people]')",
-        "ADD COLUMN \"Дни\" RELATION('[ID:journal]', DUAL 'Люди')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Родители\" RELATION('[ID:people]', DUAL 'Дети' 'children')",
+          "ADD COLUMN \"Супруг / партнёр\" RELATION('[ID:people]')",
+          "ADD COLUMN \"Дни\" RELATION('[ID:journal]', DUAL 'Люди')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Батьки\" RELATION('[ID:people]', DUAL 'Діти' 'children')",
+          "ADD COLUMN \"Подружжя / партнер\" RELATION('[ID:people]')",
+          "ADD COLUMN \"Дні\" RELATION('[ID:journal]', DUAL 'Люди')"
+        ],
+        "en": [
+          "ADD COLUMN \"Parents\" RELATION('[ID:people]', DUAL 'Children' 'children')",
+          "ADD COLUMN \"Spouse or partner\" RELATION('[ID:people]')",
+          "ADD COLUMN \"Days\" RELATION('[ID:journal]', DUAL 'People')"
+        ]
+      }
     },
     {
       "on": "orgs",
-      "statements": [
-        "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Организации')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Организации')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Організації')"
+        ],
+        "en": [
+          "ADD COLUMN \"People\" RELATION('[ID:people]', DUAL 'Organizations')"
+        ]
+      }
     },
     {
       "on": "projects",
-      "statements": [
-        "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Проекты')",
-        "ADD COLUMN \"Организации\" RELATION('[ID:orgs]', DUAL 'Проекты')",
-        "ADD COLUMN \"Дни\" RELATION('[ID:journal]', DUAL 'Проекты')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Проекты')",
+          "ADD COLUMN \"Организации\" RELATION('[ID:orgs]', DUAL 'Проекты')",
+          "ADD COLUMN \"Дни\" RELATION('[ID:journal]', DUAL 'Проекты')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Люди\" RELATION('[ID:people]', DUAL 'Проєкти')",
+          "ADD COLUMN \"Організації\" RELATION('[ID:orgs]', DUAL 'Проєкти')",
+          "ADD COLUMN \"Дні\" RELATION('[ID:journal]', DUAL 'Проєкти')"
+        ],
+        "en": [
+          "ADD COLUMN \"People\" RELATION('[ID:people]', DUAL 'Projects')",
+          "ADD COLUMN \"Organizations\" RELATION('[ID:orgs]', DUAL 'Projects')",
+          "ADD COLUMN \"Days\" RELATION('[ID:journal]', DUAL 'Projects')"
+        ]
+      }
     },
     {
       "on": "ideas",
-      "statements": [
-        "ADD COLUMN \"Дни\" RELATION('[ID:journal]', DUAL 'Идеи')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Дни\" RELATION('[ID:journal]', DUAL 'Идеи')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Дні\" RELATION('[ID:journal]', DUAL 'Ідеї')"
+        ],
+        "en": [
+          "ADD COLUMN \"Days\" RELATION('[ID:journal]', DUAL 'Ideas')"
+        ]
+      }
     },
     {
       "on": "docs",
-      "statements": [
-        "ADD COLUMN \"Владелец\" RELATION('[ID:people]', DUAL 'Документы')",
-        "ADD COLUMN \"Организация\" RELATION('[ID:orgs]', DUAL 'Документы')",
-        "ADD COLUMN \"Объекты\" RELATION('[ID:things]', DUAL 'Документы')",
-        "ADD COLUMN \"Дело\" RELATION('[ID:cases]', DUAL 'Документы')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Владелец\" RELATION('[ID:people]', DUAL 'Документы')",
+          "ADD COLUMN \"Организация\" RELATION('[ID:orgs]', DUAL 'Документы')",
+          "ADD COLUMN \"Объекты\" RELATION('[ID:things]', DUAL 'Документы')",
+          "ADD COLUMN \"Дело\" RELATION('[ID:cases]', DUAL 'Документы')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Власник\" RELATION('[ID:people]', DUAL 'Документи')",
+          "ADD COLUMN \"Організація\" RELATION('[ID:orgs]', DUAL 'Документи')",
+          "ADD COLUMN \"Об’єкти\" RELATION('[ID:things]', DUAL 'Документи')",
+          "ADD COLUMN \"Справа\" RELATION('[ID:cases]', DUAL 'Документи')"
+        ],
+        "en": [
+          "ADD COLUMN \"Holder\" RELATION('[ID:people]', DUAL 'Documents')",
+          "ADD COLUMN \"Organization\" RELATION('[ID:orgs]', DUAL 'Documents')",
+          "ADD COLUMN \"Things\" RELATION('[ID:things]', DUAL 'Documents')",
+          "ADD COLUMN \"Case\" RELATION('[ID:cases]', DUAL 'Documents')"
+        ]
+      }
     },
     {
       "on": "cases",
-      "statements": [
-        "ADD COLUMN \"Участники\" RELATION('[ID:people]', DUAL 'Дела')",
-        "ADD COLUMN \"Организации\" RELATION('[ID:orgs]', DUAL 'Дела')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Участники\" RELATION('[ID:people]', DUAL 'Дела')",
+          "ADD COLUMN \"Организации\" RELATION('[ID:orgs]', DUAL 'Дела')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Учасники\" RELATION('[ID:people]', DUAL 'Справи')",
+          "ADD COLUMN \"Організації\" RELATION('[ID:orgs]', DUAL 'Справи')"
+        ],
+        "en": [
+          "ADD COLUMN \"Participants\" RELATION('[ID:people]', DUAL 'Cases')",
+          "ADD COLUMN \"Organizations\" RELATION('[ID:orgs]', DUAL 'Cases')"
+        ]
+      }
     },
     {
       "on": "bio",
-      "statements": [
-        "ADD COLUMN \"Человек\" RELATION('[ID:people]', DUAL 'Биография')",
-        "ADD COLUMN \"Организация\" RELATION('[ID:orgs]', DUAL 'Биография')",
-        "ADD COLUMN \"Место\" RELATION('[ID:places]', DUAL 'Биография')",
-        "ADD COLUMN \"Дело\" RELATION('[ID:cases]', DUAL 'Биография')",
-        "ADD COLUMN \"Документ-основание\" RELATION('[ID:docs]', DUAL 'События')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Человек\" RELATION('[ID:people]', DUAL 'Биография')",
+          "ADD COLUMN \"Организация\" RELATION('[ID:orgs]', DUAL 'Биография')",
+          "ADD COLUMN \"Место\" RELATION('[ID:places]', DUAL 'Биография')",
+          "ADD COLUMN \"Дело\" RELATION('[ID:cases]', DUAL 'Биография')",
+          "ADD COLUMN \"Документ-основание\" RELATION('[ID:docs]', DUAL 'События')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Людина\" RELATION('[ID:people]', DUAL 'Біографія')",
+          "ADD COLUMN \"Організація\" RELATION('[ID:orgs]', DUAL 'Біографія')",
+          "ADD COLUMN \"Місце\" RELATION('[ID:places]', DUAL 'Біографія')",
+          "ADD COLUMN \"Справа\" RELATION('[ID:cases]', DUAL 'Біографія')",
+          "ADD COLUMN \"Документ-підстава\" RELATION('[ID:docs]', DUAL 'Події')"
+        ],
+        "en": [
+          "ADD COLUMN \"Person\" RELATION('[ID:people]', DUAL 'Biography')",
+          "ADD COLUMN \"Organization\" RELATION('[ID:orgs]', DUAL 'Biography')",
+          "ADD COLUMN \"Place\" RELATION('[ID:places]', DUAL 'Biography')",
+          "ADD COLUMN \"Case\" RELATION('[ID:cases]', DUAL 'Biography')",
+          "ADD COLUMN \"Source document\" RELATION('[ID:docs]', DUAL 'Events')"
+        ]
+      }
     },
     {
       "on": "powers",
-      "statements": [
-        "ADD COLUMN \"Решения\" RELATION('[ID:queue]', DUAL 'Операция')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Решения\" RELATION('[ID:queue]', DUAL 'Операция')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Рішення\" RELATION('[ID:queue]', DUAL 'Операція')"
+        ],
+        "en": [
+          "ADD COLUMN \"Decisions\" RELATION('[ID:queue]', DUAL 'Operation')"
+        ]
+      }
     }
   ],
   "computed": [
     {
       "on": "facts",
-      "statements": [
-        "ADD COLUMN \"Актуален\" FORMULA('empty(prop(\"Валидно по\")) and prop(\"Доверие\") != \"опровергнуто\"')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Актуален\" FORMULA('empty(prop(\"Валидно по\")) and prop(\"Доверие\") != \"опровергнуто\"')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Чинний\" FORMULA('empty(prop(\"Дійсно до\")) and prop(\"Довіра\") != \"спростовано\"')"
+        ],
+        "en": [
+          "ADD COLUMN \"Current\" FORMULA('empty(prop(\"Valid until\")) and prop(\"Trust\") != \"refuted\"')"
+        ]
+      }
     },
     {
       "on": "docs",
-      "statements": [
-        "ADD COLUMN \"⏳ Осталось\" FORMULA('dateBetween(prop(\"Действует до\"), now(), \"days\")')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"⏳ Осталось\" FORMULA('dateBetween(prop(\"Действует до\"), now(), \"days\")')"
+        ],
+        "uk": [
+          "ADD COLUMN \"⏳ Лишилося\" FORMULA('dateBetween(prop(\"Дійсний до\"), now(), \"days\")')"
+        ],
+        "en": [
+          "ADD COLUMN \"⏳ Days left\" FORMULA('dateBetween(prop(\"Valid until\"), now(), \"days\")')"
+        ]
+      }
     },
     {
       "on": "people",
-      "statements": [
-        "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')",
-        "ADD COLUMN \"⏰ Ближайший срок\" ROLLUP('Документы', 'Действует до', 'earliest_date')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')",
+          "ADD COLUMN \"⏰ Ближайший срок\" ROLLUP('Документы', 'Действует до', 'earliest_date')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Кількість фактів\" ROLLUP('Факти', 'Твердження', 'count')",
+          "ADD COLUMN \"⏰ Найближчий строк\" ROLLUP('Документи', 'Дійсний до', 'earliest_date')"
+        ],
+        "en": [
+          "ADD COLUMN \"Fact count\" ROLLUP('Facts', 'Statement', 'count')",
+          "ADD COLUMN \"⏰ Next deadline\" ROLLUP('Documents', 'Valid until', 'earliest_date')"
+        ]
+      }
     },
     {
       "on": "cases",
-      "statements": [
-        "ADD COLUMN \"⏰ Срок по документам\" ROLLUP('Документы', 'Действует до', 'earliest_date')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"⏰ Срок по документам\" ROLLUP('Документы', 'Действует до', 'earliest_date')"
+        ],
+        "uk": [
+          "ADD COLUMN \"⏰ Строк за документами\" ROLLUP('Документи', 'Дійсний до', 'earliest_date')"
+        ],
+        "en": [
+          "ADD COLUMN \"⏰ Deadline from documents\" ROLLUP('Documents', 'Valid until', 'earliest_date')"
+        ]
+      }
     },
     {
       "on": "orgs",
-      "statements": [
-        "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Кількість фактів\" ROLLUP('Факти', 'Твердження', 'count')"
+        ],
+        "en": [
+          "ADD COLUMN \"Fact count\" ROLLUP('Facts', 'Statement', 'count')"
+        ]
+      }
     },
     {
       "on": "places",
-      "statements": [
-        "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Кількість фактів\" ROLLUP('Факти', 'Твердження', 'count')"
+        ],
+        "en": [
+          "ADD COLUMN \"Fact count\" ROLLUP('Facts', 'Statement', 'count')"
+        ]
+      }
     },
     {
       "on": "things",
-      "statements": [
-        "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Кількість фактів\" ROLLUP('Факти', 'Твердження', 'count')"
+        ],
+        "en": [
+          "ADD COLUMN \"Fact count\" ROLLUP('Facts', 'Statement', 'count')"
+        ]
+      }
     },
     {
       "on": "projects",
-      "statements": [
-        "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Кількість фактів\" ROLLUP('Факти', 'Твердження', 'count')"
+        ],
+        "en": [
+          "ADD COLUMN \"Fact count\" ROLLUP('Facts', 'Statement', 'count')"
+        ]
+      }
     },
     {
       "on": "ideas",
-      "statements": [
-        "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Кількість фактів\" ROLLUP('Факти', 'Твердження', 'count')"
+        ],
+        "en": [
+          "ADD COLUMN \"Fact count\" ROLLUP('Facts', 'Statement', 'count')"
+        ]
+      }
     },
     {
       "on": "journal",
-      "statements": [
-        "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
-      ]
+      "statements": {
+        "ru": [
+          "ADD COLUMN \"Кол-во фактов\" ROLLUP('Факты', 'Утверждение', 'count')"
+        ],
+        "uk": [
+          "ADD COLUMN \"Кількість фактів\" ROLLUP('Факти', 'Твердження', 'count')"
+        ],
+        "en": [
+          "ADD COLUMN \"Fact count\" ROLLUP('Facts', 'Statement', 'count')"
+        ]
+      }
     }
-  ]
+  ],
+  "seed": {
+    "permissions_columns": {
+      "Operation": {
+        "ru": "Операция",
+        "uk": "Операція",
+        "en": "Operation"
+      },
+      "Level": {
+        "ru": "Уровень",
+        "uk": "Рівень",
+        "en": "Level"
+      },
+      "Scope": {
+        "ru": "Область",
+        "uk": "Царина",
+        "en": "Scope"
+      },
+      "Limits": {
+        "ru": "Ограничения",
+        "uk": "Обмеження",
+        "en": "Limits"
+      },
+      "Reversibility": {
+        "ru": "Обратимость",
+        "uk": "Оборотність",
+        "en": "Reversibility"
+      },
+      "Granted by": {
+        "ru": "Кто разрешил",
+        "uk": "Хто дозволив",
+        "en": "Granted by"
+      }
+    },
+    "permissions": [
+      {
+        "ru": {
+          "Operation": "Создать факт, сущность или связь в базе знаний",
+          "Level": "2 — делает молча",
+          "Scope": "запись",
+          "Reversibility": "обратимо",
+          "Granted by": "по умолчанию",
+          "Limits": "По write-gate §2. Секреты не записывать никогда"
+        },
+        "uk": {
+          "Operation": "Створити факт, сутність або зв’язок у базі знань",
+          "Level": "2 — робить мовчки",
+          "Scope": "запис",
+          "Reversibility": "оборотно",
+          "Granted by": "за замовчуванням",
+          "Limits": "За write-gate §2. Секрети не записувати ніколи"
+        },
+        "en": {
+          "Operation": "Create a fact, an entity or a relation in the knowledge base",
+          "Level": "2 — acts silently",
+          "Scope": "write",
+          "Reversibility": "reversible",
+          "Granted by": "default",
+          "Limits": "Under the write gate of §2. Never record secrets"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Дополнить пустое поле существующей карточки",
+          "Level": "2 — делает молча",
+          "Scope": "изменение",
+          "Reversibility": "обратимо",
+          "Granted by": "по умолчанию",
+          "Limits": "Только пустые поля"
+        },
+        "uk": {
+          "Operation": "Доповнити порожнє поле наявної картки",
+          "Level": "2 — робить мовчки",
+          "Scope": "зміна",
+          "Reversibility": "оборотно",
+          "Granted by": "за замовчуванням",
+          "Limits": "Лише порожні поля"
+        },
+        "en": {
+          "Operation": "Fill an empty field on an existing card",
+          "Level": "2 — acts silently",
+          "Scope": "modify",
+          "Reversibility": "reversible",
+          "Granted by": "default",
+          "Limits": "Empty fields only"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Создать страницу или базу внутри базы знаний",
+          "Level": "1 — делает и показывает",
+          "Scope": "запись",
+          "Reversibility": "обратимо",
+          "Granted by": "по умолчанию",
+          "Limits": "Показать отдельной строкой"
+        },
+        "uk": {
+          "Operation": "Створити сторінку або базу всередині бази знань",
+          "Level": "1 — робить і показує",
+          "Scope": "запис",
+          "Reversibility": "оборотно",
+          "Granted by": "за замовчуванням",
+          "Limits": "Показати окремим рядком"
+        },
+        "en": {
+          "Operation": "Create a page or a base inside the knowledge base",
+          "Level": "1 — acts and shows",
+          "Scope": "write",
+          "Reversibility": "reversible",
+          "Granted by": "default",
+          "Limits": "Show it as a separate line"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Переписать поле, заполненное владельцем",
+          "Level": "0 — предлагает",
+          "Scope": "изменение",
+          "Reversibility": "частично",
+          "Granted by": "по умолчанию",
+          "Limits": "Кроме инвалидации по §3"
+        },
+        "uk": {
+          "Operation": "Переписати поле, заповнене власником",
+          "Level": "0 — пропонує",
+          "Scope": "зміна",
+          "Reversibility": "частково",
+          "Granted by": "за замовчуванням",
+          "Limits": "Крім інвалідації за §3"
+        },
+        "en": {
+          "Operation": "Rewrite a field the owner filled in",
+          "Level": "0 — proposes",
+          "Scope": "modify",
+          "Reversibility": "partial",
+          "Granted by": "default",
+          "Limits": "Except invalidation under §3"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Изменить конституцию",
+          "Level": "0 — предлагает",
+          "Scope": "изменение",
+          "Reversibility": "частично",
+          "Granted by": "по умолчанию",
+          "Limits": "Только по протоколу §13"
+        },
+        "uk": {
+          "Operation": "Змінити конституцію",
+          "Level": "0 — пропонує",
+          "Scope": "зміна",
+          "Reversibility": "частково",
+          "Granted by": "за замовчуванням",
+          "Limits": "Лише за протоколом §13"
+        },
+        "en": {
+          "Operation": "Change the constitution",
+          "Level": "0 — proposes",
+          "Scope": "modify",
+          "Reversibility": "partial",
+          "Granted by": "default",
+          "Limits": "Only under the protocol of §13"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Удалить страницу, базу или строку",
+          "Level": "⛔ никогда",
+          "Scope": "удаление",
+          "Reversibility": "необратимо",
+          "Granted by": "по умолчанию",
+          "Limits": "Удаляет только владелец руками"
+        },
+        "uk": {
+          "Operation": "Видалити сторінку, базу або рядок",
+          "Level": "⛔ ніколи",
+          "Scope": "видалення",
+          "Reversibility": "незворотно",
+          "Granted by": "за замовчуванням",
+          "Limits": "Видаляє лише власник руками"
+        },
+        "en": {
+          "Operation": "Delete a page, a base or a row",
+          "Level": "⛔ never",
+          "Scope": "delete",
+          "Reversibility": "irreversible",
+          "Granted by": "default",
+          "Limits": "Only the owner deletes, by hand"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Любое действие в сервисе вне Notion",
+          "Level": "0 — предлагает",
+          "Scope": "вне Notion",
+          "Reversibility": "частично",
+          "Granted by": "по умолчанию",
+          "Limits": "Вопрос через 📮 Очередь решений"
+        },
+        "uk": {
+          "Operation": "Будь-яка дія в сервісі поза Notion",
+          "Level": "0 — пропонує",
+          "Scope": "поза Notion",
+          "Reversibility": "частково",
+          "Granted by": "за замовчуванням",
+          "Limits": "Питання через 📮 Чергу рішень"
+        },
+        "en": {
+          "Operation": "Any action in a service outside Notion",
+          "Level": "0 — proposes",
+          "Scope": "outside Notion",
+          "Reversibility": "partial",
+          "Granted by": "default",
+          "Limits": "Ask through the 📮 Decision queue"
+        }
+      },
+      {
+        "ru": {
+          "Operation": "Повысить собственный уровень в этом реестре",
+          "Level": "⛔ никогда",
+          "Scope": "изменение",
+          "Reversibility": "необратимо",
+          "Granted by": "по умолчанию",
+          "Limits": "Уровень поднимает только владелец"
+        },
+        "uk": {
+          "Operation": "Підвищити власний рівень у цьому реєстрі",
+          "Level": "⛔ ніколи",
+          "Scope": "зміна",
+          "Reversibility": "незворотно",
+          "Granted by": "за замовчуванням",
+          "Limits": "Рівень піднімає лише власник"
+        },
+        "en": {
+          "Operation": "Raise its own level in this register",
+          "Level": "⛔ never",
+          "Scope": "modify",
+          "Reversibility": "irreversible",
+          "Granted by": "default",
+          "Limits": "Only the owner raises a level"
+        }
+      }
+    ]
+  }
 }

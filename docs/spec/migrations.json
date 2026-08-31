@@ -1,4 +1,19 @@
 {
+  "$comment": "Цепочка миграций между версиями шаблона. Блоки schema, constitution и pages разветвлены по языкам структуры: агент берёт ветку языка, записанного на странице обновлений. / The chain of migrations between template versions. The schema, constitution and pages blocks branch by structure language.",
   "schema_version": "1",
-  "migrations": []
+  "spec_format": "2",
+  "migrations": [
+    {
+      "from": "1.0.0",
+      "to": "1.1.0",
+      "date": "2026-08-31",
+      "summary": "Добавлены украинская и английская версии структуры. На уже установленную базу не влияет: язык выбирается один раз при установке.",
+      "schema": { "ru": [], "uk": [], "en": [] },
+      "constitution": { "ru": [], "uk": [], "en": [] },
+      "pages": { "ru": [], "uk": [], "en": [] },
+      "manual": [
+        "Ничего делать не нужно. Установленная структура остаётся на своём языке; чтобы получить другой язык, ставится отдельная база."
+      ]
+    }
+  ]
 }

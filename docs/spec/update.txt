@@ -1,104 +1,119 @@
-# Обновление структуры памяти — регламент для агента
+# Updating the memory structure — procedure for the agent
 
-Ты проверяешь, вышла ли новая версия шаблона `notion-memory-constitution`,
-и применяешь её. Этот регламент запускается по расписанию или по просьбе
-владельца. Он рассчитан на работу без человека — поэтому границы жёсткие.
+You are checking whether a new version of the `notion-memory-constitution`
+template has been released, and applying it. This procedure runs on a schedule
+or at the owner's request. It is written to run with nobody watching, so its
+boundaries are hard ones.
 
-## Что этот регламент НЕ делает — ни при каких условиях
+This file is in English so that it serves every supported language. The
+structure you are updating has its own language, recorded on the template
+updates page; work in that language and speak to the owner in it.
 
-- Не удаляет ничего: ни страниц, ни баз, ни строк, ни полей.
-  `DROP COLUMN` не выполняется никогда, даже если он есть в миграции.
-- Не трогает данные владельца: факты, карточки людей, документы, дела,
-  предпочтения, записи журнала. Обновление меняет только структуру
-  и служебный текст.
-- Не меняет §8, §9, §13.2 конституции и не поднимает ни один уровень
-  в ⚖️ Полномочиях. Пришло такое в миграции — обновление не применяется
-  целиком, заводится вопрос в 📮 Очередь решений.
-- Не восстанавливает параграф, который владелец переписал под себя.
-  Локальная правка сильнее шаблона.
+## What this procedure NEVER does
 
-## Шаг 0. Контекст
+- Deletes nothing: no pages, no bases, no rows, no fields. `DROP COLUMN` is
+  never executed, even if a migration contains one.
+- Never touches the owner's data: facts, people, documents, cases,
+  preferences, journal entries. An update changes structure and service text
+  only.
+- Never changes §8, §9 or §13.2 of the constitution, and never raises a level
+  in the permissions register. If a migration carries such a change, the
+  update is not applied at all — a question goes into the decision queue.
+- Never restores a paragraph the owner rewrote. A local edit outranks the
+  template.
 
-Загрузи инструменты Notion: search, fetch, update-page, update-data-source,
+## Step 0. Context
+
+Load the Notion tools: search, fetch, update-page, update-data-source,
 create-pages, query-data-sources.
 
-`notion-search` → страница «🔄 Обновления шаблона». Не нашлась — шаблон
-не установлен: скажи об этом одной строкой и остановись. С неё возьми:
-BASE (поле «Источник»), INSTALLED (поле «Установленная версия»).
+`notion-search` for the template updates page — the one whose body contains
+`Template: notion-memory-constitution`. Not found: the template is not
+installed, so say it in one line and stop. From that page take:
 
-## Шаг 1. Есть ли обновление
+- BASE — the `Source:` line;
+- INSTALLED — the `Installed version:` line;
+- LANG — the `Language:` line. Absent (installed before languages existed) —
+  treat it as `ru` and add the line while you are updating the page.
 
-Скачай BASE/../version.json. Не скачался — обнови на странице только строку
-«Последняя проверка обновлений» и закончи молча: недоступность источника
-не повод для сообщения.
+These keys are in English in every language. If they are missing but the page
+clearly is the right one, say so and stop rather than guessing.
 
-Сравни `version` из файла с INSTALLED как семантические версии.
+## Step 1. Is there an update?
 
-- Равны или в файле старше — обнови «Последняя проверка обновлений»
-  на сегодня и закончи. **Ничего не сообщай владельцу.** Тихий прогон —
-  нормальный результат.
-- В файле новее — иди дальше.
+Fetch BASE/../version.json. Not reachable: update only the `Last update check`
+line on the page and finish silently — an unreachable source is not worth a
+message.
 
-## Шаг 2. План
+Compare `version` from the file with INSTALLED as semantic versions.
 
-Скачай BASE/migrations.json. Отбери миграции, у которых `from` ≥ INSTALLED
-и `to` ≤ новой версии, и выстрой их цепочкой по возрастанию. Разрыв в цепочке
-(нет миграции от установленной версии) — не гадай: заведи вопрос в 📮 Очередь
-решений и остановись.
+- Equal, or the file is older: set `Last update check` to today and finish.
+  **Say nothing to the owner.** A quiet run is a normal outcome.
+- The file is newer: continue.
 
-Прочитай каждую миграцию целиком до первого изменения. Найдёшь в ней
-запрещённое из раздела выше — не применяй ничего, заведи вопрос
-и остановись.
+## Step 2. The plan
 
-## Шаг 3. Схема
+Fetch BASE/migrations.json. Select the migrations whose `from` is at or after
+INSTALLED and whose `to` is at or before the new version, and order them
+ascending. A gap in the chain — no migration starting from the installed
+version — is not something to guess about: file a question in the decision
+queue and stop.
 
-Для каждой миграции по порядку выполни её блок `schema`: те же
-`notion-update-data-source`, что при установке, с подстановкой реальных
-data_source_id вместо `[ID:key]`. Id бери из таблицы маршрутизации
-в конце конституции.
+Read each migration in full before making the first change. If it contains
+anything from the "never" list above, apply nothing, file a question and stop.
 
-Разрешены `ADD COLUMN`, `RENAME COLUMN`, `ALTER COLUMN SET`. Всё остальное —
-в список «не применено» с причиной.
+## Step 3. Schema
 
-`ALTER COLUMN SET` для select и multi-select выполняй, только если новый
-набор опций содержит все прежние. Опция пропала — не применяй: у владельца
-могут быть строки с этим значением.
+For each migration in order, carry out its `schema` block: the same
+`notion-update-data-source` calls as during installation, taking the
+statements from the migration's `LANG` branch and substituting real
+data_source_ids for `[ID:key]`. Take the ids from the routing table at the end
+of the constitution.
 
-## Шаг 4. Конституция
+`ADD COLUMN`, `RENAME COLUMN` and `ALTER COLUMN SET` are allowed. Anything
+else goes on the "not applied" list with a reason.
 
-Для каждой миграции выполни её блок `constitution`. Каждый пункт — это пара
-«старый фрагмент → новый фрагмент» для `notion-update-page` с `update_content`.
+`ALTER COLUMN SET` on a select or multi-select is applied only if the new set
+of options contains every previous one. An option that disappeared is not
+applied: the owner may have rows carrying that value.
 
-Перед заменой сверь: старый фрагмент в теле страницы найден дословно?
+## Step 4. The constitution
 
-- Да — заменяй.
-- Нет — значит, владелец правил этот параграф сам. Не заменять. Записать
-  в «не применено» и завести одну строку в 📮 Очередь решений с вопросом,
-  переносить ли изменение вручную.
+For each migration, carry out its `constitution` block, taking the `LANG`
+branch. Each item is an old fragment and a new one for `notion-update-page`
+with `update_content`.
 
-После всех замен подними версию конституции в шапке страницы на значение
-`constitution_version` из version.json и добавь строку в 🕓 Историю изменений
-конституции: дата · новая версия · что изменилось · «обновление шаблона
-<from> → <to>».
+Before replacing, check: is the old fragment present in the page body,
+verbatim?
 
-## Шаг 5. Новые страницы и базы
+- Yes — replace it.
+- No — the owner has edited that paragraph. Do not replace. Record it on the
+  "not applied" list and file one row in the decision queue asking whether to
+  port the change by hand.
 
-Блок `pages` миграции — создание того, чего раньше не было. Перед созданием
-проверь поиском, что такой страницы или базы ещё нет. Есть — пропусти.
+After all replacements, raise the constitution version in the page header to
+`constitution_version` from version.json and add a row to the constitution
+change log: date · new version · what changed · "template update <from> →
+<to>".
 
-## Шаг 6. Запись результата
+## Step 5. New pages and bases
 
-Обнови страницу «🔄 Обновления шаблона»: «Установленная версия», «Версия
-схемы», «Версия конституции», «Последняя проверка обновлений». Добавь строку
-в «Журнал обновлений»: дата · было · стало · что изменилось · что не
-применено и почему.
+A migration's `pages` block creates things that did not exist before. Before
+creating, search to confirm the page or base is not already there. It is —
+skip it.
 
-## Шаг 7. Отчёт
+## Step 6. Recording the result
 
-Одна строка владельцу:
-`Шаблон обновлён: <было> → <стало>. Изменено: <кратко>. Не применено: <кратко или «нет»>.`
+Update the template updates page: `Installed version`, `Schema version`,
+`Constitution version`, `Last update check`. Add a row to the update log:
+date · from · to · what changed · what was not applied and why.
 
-Если что-то попало в «не применено» — добавь вторую строку со ссылкой
-на 📮 Очередь решений.
+## Step 7. Report
 
-Ничего не изменилось — не пиши ничего.
+One line to the owner, in LANG:
+`Template updated: <from> → <to>. Changed: <briefly>. Not applied: <briefly or "nothing">.`
+
+If anything landed on the "not applied" list, add a second line pointing to
+the decision queue.
+
+Nothing changed — write nothing.
