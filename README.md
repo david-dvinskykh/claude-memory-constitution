@@ -49,6 +49,7 @@
 | `docs/spec/migrations.json` | Цепочка миграций между версиями |
 | `docs/*.md` | Человеческая документация, публикуется через GitHub Pages |
 | `tools/validate_spec.py` | Проверка целостности спецификации на всех языках |
+| `.github/workflows/pages.yml` | Сборка и публикация `docs/` на GitHub Pages |
 
 ## Чем это отличается от обычной памяти агента
 
@@ -87,8 +88,13 @@ python3 tools/validate_spec.py
 
 ## Публикация документации
 
-GitHub Pages: Settings → Pages → Source: *Deploy from a branch* → ветка `main`,
-папка `/docs`.
+Сайт собирается из `docs/` workflow'ом `.github/workflows/pages.yml`.
+Настройка: Settings → Pages → Source: **GitHub Actions**. Дальше публикация
+идёт сама на каждый push в `main`; ручной запуск — Actions → *Deploy docs to
+GitHub Pages* → Run workflow.
+
+Альтернатива без workflow: Source: *Deploy from a branch* → ветка `main`,
+папка `/docs`. Тогда файл workflow можно удалить.
 
 ## Лицензия
 

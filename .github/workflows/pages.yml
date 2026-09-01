@@ -1,0 +1,52 @@
+# Сборка и публикация документации из docs/ на GitHub Pages.
+# Нужен, когда в Settings → Pages выбран источник «GitHub Actions»:
+# в этом режиме сайт не публикуется сам, его собирает этот workflow.
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Минимум прав: чтение репозитория и публикация Pages. Записи в код нет.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Публикуется всегда последний коммит; параллельные прогоны не нужны,
+# но начатый деплой не обрывается на середине.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          # Сайт живёт в docs/, а не в корне: там _config.yml и все страницы.
+          source: ./docs
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
