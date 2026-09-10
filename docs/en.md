@@ -98,7 +98,7 @@ The template carries nobody's personal data — no names, numbers, addresses or
 countries. Nothing is sent anywhere: the installer reads files over HTTPS and
 writes only to your Notion.
 
-Version 1.1 works with **Notion only**. No file storage, mail, messengers or
+Version 1.3 works with **Notion only**. No file storage, mail, messengers or
 calendars.
 
 The full documentation is currently in Russian: [index.md](index.md).
