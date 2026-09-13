@@ -223,6 +223,31 @@
         "Регламент обслуживания (если он заведён) дополнить двумя шагами: ставить пробам без подтверждения 90 дней Статус «уснуло» (§16.3) и писать в карточку дня строку-метрику (§11). Без этого оба правила остаются мёртвой буквой. / If a maintenance procedure exists, add two steps to it: set Status “dormant” on trials unconfirmed for 90 days (§16.3), and write the metric line into the day card (§11). Without that, both rules stay dead letters.",
         "Свод предпочтений в §0 теперь читает только четыре поля. Если запрос был вписан в задачу или в бутлоадер, обновить его там же. / The §0 preference body now reads four fields only. If that query was copied into a task or a bootloader, update it there too."
       ]
+    },
+    {
+      "from": "1.3.0",
+      "to": "1.4.0",
+      "date": "2026-09-13",
+      "summary": "Шаблон стал плагином: ставится и обновляется через Cowork Plugins и /plugin в Claude Code. На установленную структуру не влияет — меняется только способ доставки. / The template is now a plugin: installed and updated through Cowork Plugins and /plugin in Claude Code. Installed structures are unaffected — only the delivery changes.",
+      "schema": {
+        "ru": [],
+        "uk": [],
+        "en": []
+      },
+      "constitution": {
+        "ru": [],
+        "uk": [],
+        "en": []
+      },
+      "pages": {
+        "ru": [],
+        "uk": [],
+        "en": []
+      },
+      "manual": [
+        "Ничего делать не нужно. Структура и конституция не изменились; версия на странице обновлений поднимается до 1.4.0. / Nothing to do. The structure and the constitution are unchanged; the version on the updates page moves to 1.4.0.",
+        "Если хочется ставить и обновлять шаблон командой, а не ссылкой: /plugin marketplace add david-dvinskykh/claude-memory-constitution и /plugin install notion-memory-constitution@claude-memory-constitution. Адрес источника при этом остаётся прежним. / To install and update by command rather than by link: /plugin marketplace add david-dvinskykh/claude-memory-constitution then /plugin install notion-memory-constitution@claude-memory-constitution. The source address stays the same."
+      ]
     }
   ]
 }

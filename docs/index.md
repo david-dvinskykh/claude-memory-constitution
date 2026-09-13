@@ -12,8 +12,9 @@ title: Конституция памяти
 
 **Разделы:** [Архитектура](architecture.md) · [Схема баз](schema.md) ·
 [Конституция](constitution.md) · [Установка](install.md) ·
-[Обновления](updates.md) · [Настройка под себя](customize.md) ·
-[Приватность](privacy.md) · [Изменения](changelog.md)
+[Плагин](plugin.md) · [Обновления](updates.md) ·
+[Настройка под себя](customize.md) · [Приватность](privacy.md) ·
+[Изменения](changelog.md)
 
 **Other languages:** [English quick start](en.md) · [Українською](uk.md)
 
@@ -66,6 +67,17 @@ title: Конституция памяти
 id, заведёт служебные страницы и выдаст готовый бутлоадер для вставки
 в настройки.
 
+Там, где есть плагины — Claude Code и Cowork, — то же самое ставится
+командой:
+
+```
+/plugin marketplace add david-dvinskykh/claude-memory-constitution
+/plugin install notion-memory-constitution@claude-memory-constitution
+```
+
+Появятся два навыка: `memory-install` и `memory-update`. Подробно —
+[Плагин](plugin.md).
+
 Подробно, с требованиями и ручным вариантом, — [Установка](install.md).
 
 ## Автообновление
@@ -76,6 +88,8 @@ id, заведёт служебные страницы и выдаст гото�
 ```
 Прочитай https://david-dvinskykh.github.io/claude-memory-constitution/spec/update.txt и выполни целиком.
 ```
+
+С плагином то же самое делает навык `memory-update`.
 
 Регламент сам сходит за версией, сравнит с установленной и применит разницу.
 Он не удаляет ничего и не трогает ваши данные — только структуру и служебный

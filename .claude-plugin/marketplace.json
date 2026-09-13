@@ -1,0 +1,20 @@
+{
+  "name": "claude-memory-constitution",
+  "owner": {
+    "name": "David Dvinskykh",
+    "url": "https://github.com/david-dvinskykh"
+  },
+  "description": "Long-term memory structure for an AI agent in Notion — schema, standing instruction, installer and update procedure.",
+  "plugins": [
+    {
+      "name": "notion-memory-constitution",
+      "source": ".",
+      "description": "Installs and maintains a long-term memory structure for an AI agent in Notion: 16 linked databases plus the written constitution the agent follows.",
+      "category": "productivity",
+      "keywords": ["notion", "memory", "knowledge-base"],
+      "license": "MIT",
+      "homepage": "https://david-dvinskykh.github.io/claude-memory-constitution/",
+      "repository": "https://github.com/david-dvinskykh/claude-memory-constitution"
+    }
+  ]
+}

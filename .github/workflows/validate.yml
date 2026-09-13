@@ -1,0 +1,48 @@
+# Проверка спецификации и манифестов плагина. Гоняется на каждый push
+# и вручную. Ничего не публикует и никуда не пишет — только проверяет.
+name: Validate spec and plugin
+
+on:
+  push:
+  workflow_dispatch:
+
+# Минимум прав: workflow только читает репозиторий.
+permissions:
+  contents: read
+
+# Незаконченные прогоны по одной ветке не копятся: важен последний коммит.
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Разбор DDL, совпадение полей между языками, цели связей, ссылки
+      # формул и роллапов, плейсхолдеры и маршрутизация в конституциях,
+      # согласованность версий, цепочка миграций и раздел о плагине.
+      - name: Спецификация
+        run: python3 tools/validate_spec.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Схема маркетплейса — тем же инструментом, которым её читает клиент.
+      # Версия не пинуется: пин здесь никто не двигает, а устаревший
+      # валидатор пропустит то, на чём споткнётся живой Claude Code.
+      - name: Установить Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Манифест маркетплейса
+        run: claude plugin validate .

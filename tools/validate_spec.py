@@ -209,6 +209,53 @@ for mig in migrations["migrations"]:
                      "результат правки %s не найден в конституции — файл и миграция разошлись"
                      % item.get("section", "?"))
 
+# 9. Плагин: манифесты на месте, версии и имена не разошлись.
+PLUGIN_DIR = os.path.join(ROOT, ".claude-plugin")
+plugin_path = os.path.join(PLUGIN_DIR, "plugin.json")
+market_path = os.path.join(PLUGIN_DIR, "marketplace.json")
+if not os.path.exists(plugin_path):
+    fail("plugin", "нет .claude-plugin/plugin.json")
+elif not os.path.exists(market_path):
+    fail("plugin", "нет .claude-plugin/marketplace.json")
+else:
+    plugin = json.load(open(plugin_path, encoding="utf-8"))
+    market = json.load(open(market_path, encoding="utf-8"))
+    if plugin.get("version") != version["version"]:
+        fail("plugin", "plugin.json %s против version.json %s"
+             % (plugin.get("version"), version["version"]))
+    declared = version.get("plugin", {})
+    if plugin.get("name") != declared.get("name"):
+        fail("plugin", "имя плагина %r против version.json %r"
+             % (plugin.get("name"), declared.get("name")))
+    if market.get("name") != declared.get("marketplace_name"):
+        fail("plugin", "имя маркетплейса %r против version.json %r"
+             % (market.get("name"), declared.get("marketplace_name")))
+    entries = market.get("plugins", [])
+    if [e.get("name") for e in entries] != [plugin.get("name")]:
+        fail("plugin", "marketplace.json перечисляет %r, а плагин один: %r"
+             % ([e.get("name") for e in entries], plugin.get("name")))
+    for entry in entries:
+        src = entry.get("source")
+        if isinstance(src, str) and not os.path.exists(os.path.join(ROOT, src)):
+            fail("plugin", "source %r не существует" % src)
+    skills_dir = os.path.join(ROOT, "skills")
+    found = sorted(name for name in os.listdir(skills_dir)) if os.path.isdir(skills_dir) else []
+    if not found:
+        fail("plugin", "в skills/ нет ни одного навыка")
+    for name in found:
+        skill = os.path.join(skills_dir, name, "SKILL.md")
+        if not os.path.exists(skill):
+            fail("plugin", "у навыка %s нет SKILL.md" % name)
+            continue
+        text = open(skill, encoding="utf-8").read()
+        if not text.startswith("---"):
+            fail("plugin/%s" % name, "нет frontmatter")
+        if ('name: %s' % name) not in text:
+            fail("plugin/%s" % name, "frontmatter name не совпадает с именем каталога")
+        for ref in re.findall(r"\$\{CLAUDE_PLUGIN_ROOT\}/([^\s`'\"]+)", text):
+            if not os.path.exists(os.path.join(ROOT, ref.rstrip("/"))):
+                fail("plugin/%s" % name, "ссылка на %s, которой нет в репозитории" % ref)
+
 print("баз: %d · языков: %d · связей: %d · вычисляемых полей: %d · строк полномочий: %d"
       % (len(schema["databases"]), len(LANGS),
          sum(len(r["statements"][LANGS[0]]) for r in schema["relations"]),
