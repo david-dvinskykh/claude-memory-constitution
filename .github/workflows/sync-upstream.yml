@@ -1,0 +1,330 @@
+# Keeps a copy of this repository up to date with its upstream.
+#
+# Two kinds of copy are supported, because Claude Code wants a private
+# marketplace and GitHub has no private forks:
+#
+#   fork     — synced through GitHub's own merge-upstream, the same
+#              server-side fast-forward the "Sync fork" button performs;
+#   private  — a repository made with `git clone --bare` + `git push --mirror`
+#   copy       has no upstream GitHub knows of, so the upstream is fetched
+#              as a git remote and merged here on the runner.
+#
+# The file travels with the copy, so there is nothing to install. It does
+# nothing in the upstream repository itself.
+#
+# It never force-pushes and never rewrites history. When the copy has
+# diverged, the run stops and files one issue instead.
+name: Sync with upstream
+
+on:
+  schedule:
+    # Weekly. The template releases rarely; daily runs would be noise.
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      branches:
+        description: 'Branches to sync, space separated. Empty = the default branch.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    # The upstream has no upstream of its own. Anywhere else, run.
+    if: github.repository != 'david-dvinskykh/claude-memory-constitution'
+    runs-on: ubuntu-latest
+    steps:
+      # Full history: a private copy is merged here, not on GitHub's side.
+      # The token is the one that will push, so checkout stores it now.
+      - name: Check out this repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Sync with upstream
+        env:
+          # A PAT in SYNC_TOKEN takes over when the default token is not
+          # enough — see the workflow-files note in the docs.
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          BRANCHES: ${{ inputs.branches }}
+          USING_PAT: ${{ secrets.SYNC_TOKEN && 'yes' || 'no' }}
+          # Set the UPSTREAM_REPO variable to track something other than the
+          # template. A fork tracks its parent without any of this.
+          UPSTREAM_REPO: ${{ vars.UPSTREAM_REPO }}
+          # Only needed when the upstream itself is private.
+          UPSTREAM_TOKEN: ${{ secrets.UPSTREAM_TOKEN }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          set -uo pipefail
+
+          DEFAULT_UPSTREAM='david-dvinskykh/claude-memory-constitution'
+
+          note() { echo "$*" >> "$GITHUB_STEP_SUMMARY"; echo "$*"; }
+
+          # One open issue is the durable signal; a second one every week is
+          # not. Report once and stay quiet until the owner closes it.
+          report() {
+            title="$1"
+            # Every line of this script carries the YAML block indentation;
+            # left in place it would turn the issue body into a code block.
+            body=$(sed 's/^ *//' <<<"$2")
+            open=$(gh issue list --state open --label sync-upstream \
+                     --json number --jq '.[0].number // empty' 2>/dev/null)
+            if [ -n "$open" ]; then
+              note "Already reported in issue #$open — not filing another."
+              return 0
+            fi
+            gh label create sync-upstream --color ededed \
+              --description "Automatic upstream sync" >/dev/null 2>&1 || true
+            if gh issue create --title "$title" --body "$body" \
+                 --label sync-upstream >/dev/null; then
+              note "Filed an issue with the details."
+              return 0
+            fi
+            # Issues can be disabled on the copy. Then the failed run is the
+            # only trace left, so make sure there is one.
+            note "Could not file an issue — failing the run so this is visible."
+            return 1
+          }
+
+          # GITHUB_TOKEN may never write under .github/workflows, and no
+          # permissions block can grant it that. Only a PAT can.
+          workflow_scope_hint() {
+            cat <<TXT
+          The upstream release changes a file under \`.github/workflows/\`, and
+          \`GITHUB_TOKEN\` is never allowed to write there. No permissions block can
+          grant it — the scope does not exist for it.
+
+          To unblock, add a personal access token as the repository secret \`SYNC_TOKEN\`:
+
+          - fine-grained: this repository only, **Contents: read and write** and
+            **Workflows: read and write**;
+          - classic: the \`workflow\` scope (it includes \`repo\`).
+
+          Settings → Secrets and variables → Actions → New repository secret, named
+          \`SYNC_TOKEN\`. The sync picks it up on the next run; nothing else changes.
+
+          Until then it keeps working for every release that leaves workflow files
+          alone.
+          TXT
+          }
+
+          is_workflow_scope_error() {
+            grep -qi 'workflow' <<<"$1" &&
+            grep -qi 'permission\|scope\|refusing' <<<"$1"
+          }
+
+          repo_json=$(gh api "repos/$GITHUB_REPOSITORY" 2>&1) || {
+            note "Cannot read $GITHUB_REPOSITORY: $repo_json"
+            exit 1
+          }
+          is_fork=$(jq -r '.fork' <<<"$repo_json")
+          parent=$(jq -r '.parent.full_name // ""' <<<"$repo_json")
+          default_branch=$(jq -r '.default_branch' <<<"$repo_json")
+
+          # An explicit UPSTREAM_REPO wins; a fork otherwise tracks its parent;
+          # a detached private copy falls back to the template it came from.
+          upstream="${UPSTREAM_REPO:-}"
+          [ -n "$upstream" ] || upstream="${parent:-$DEFAULT_UPSTREAM}"
+
+          # merge-upstream only exists for real forks tracking their parent.
+          if [ "$is_fork" = "true" ] && [ "$upstream" = "$parent" ]; then
+            mode=fork
+          else
+            mode=copy
+          fi
+
+          branches="${BRANCHES:-}"
+          [ -n "$branches" ] || branches="$default_branch"
+          note "Syncing **$GITHUB_REPOSITORY** with **$upstream** (mode: $mode, token: $([ "$USING_PAT" = yes ] && echo SYNC_TOKEN || echo GITHUB_TOKEN))."
+
+          if [ "$mode" = copy ]; then
+            url="$SERVER_URL/$upstream.git"
+            if [ -n "${UPSTREAM_TOKEN:-}" ]; then
+              host="${SERVER_URL#https://}"
+              url="https://x-access-token:$UPSTREAM_TOKEN@$host/$upstream.git"
+            fi
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git remote remove upstream 2>/dev/null || true
+            git remote add upstream "$url"
+          fi
+
+          # --- one branch, fork mode: GitHub merges it server-side ---------
+          sync_fork_branch() {
+            branch=$1
+            out=$(gh api --method POST "repos/$GITHUB_REPOSITORY/merge-upstream" \
+                    -f branch="$branch" 2>&1)
+            if [ $? -eq 0 ]; then
+              case "$(jq -r '.merge_type // "unknown"' <<<"$out" 2>/dev/null)" in
+                none) note "\`$branch\`: already up to date." ;;
+                fast-forward) note "\`$branch\`: fast-forwarded to upstream." ;;
+                merge) note "\`$branch\`: merged upstream into local commits." ;;
+                *) note "\`$branch\`: synced." ;;
+              esac
+              return 0
+            fi
+            RESULT="$out"
+            if is_workflow_scope_error "$out"; then return 2; fi
+            if grep -qi 'merge conflict\|409' <<<"$out"; then return 3; fi
+            return 4
+          }
+
+          # --- one branch, copy mode: merged here, then pushed ------------
+          sync_copy_branch() {
+            branch=$1
+
+            RESULT=$(git fetch --no-tags upstream "$branch" 2>&1)
+            if [ $? -ne 0 ]; then
+              # A branch the upstream simply does not have is not a failure
+              # to reach it.
+              grep -qi "couldn't find remote ref\|could not find remote ref" <<<"$RESULT" && return 6
+              return 5
+            fi
+            if ! git rev-parse --verify -q "refs/remotes/origin/$branch" >/dev/null; then
+              RESULT="branch $branch does not exist in this repository"
+              return 6
+            fi
+            git checkout -q -B "$branch" "origin/$branch" || { RESULT="cannot check out $branch"; return 4; }
+
+            before=$(git rev-parse HEAD)
+            RESULT=$(git merge --no-edit FETCH_HEAD 2>&1)
+            if [ $? -ne 0 ]; then
+              git merge --abort 2>/dev/null || true
+              grep -qi 'unrelated histories' <<<"$RESULT" && return 7
+              return 3
+            fi
+
+            if [ "$(git rev-parse HEAD)" = "$before" ]; then
+              note "\`$branch\`: already up to date."
+              return 0
+            fi
+
+            RESULT=$(git push origin "$branch" 2>&1)
+            if [ $? -ne 0 ]; then
+              # Undo the local merge so a retry starts from a clean state.
+              git reset -q --hard "$before"
+              is_workflow_scope_error "$RESULT" && return 2
+              return 4
+            fi
+
+            if [ "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)" ]; then
+              note "\`$branch\`: fast-forwarded to upstream."
+            else
+              note "\`$branch\`: merged upstream into local commits."
+            fi
+            return 0
+          }
+
+          failed=0
+          for branch in $branches; do
+            RESULT=''
+            if [ "$mode" = fork ]; then
+              sync_fork_branch "$branch"
+            else
+              sync_copy_branch "$branch"
+            fi
+            case $? in
+              0) ;;
+              2)
+                note "\`$branch\`: blocked — upstream changed a workflow file."
+                report "Sync needs a token that may write workflows" \
+          "The sync could not update \`$branch\`.
+
+          $(workflow_scope_hint)
+
+          The answer was:
+
+          \`\`\`
+          $RESULT
+          \`\`\`" || failed=1 ;;
+              3)
+                note "\`$branch\`: diverged from upstream — a merge would conflict."
+                report "Sync stopped: \`$branch\` conflicts with upstream" \
+          "The sync left \`$branch\` untouched: it and the upstream branch changed the
+          same lines, so the merge conflicts.
+
+          This is deliberately not resolved automatically. Overwriting the branch would
+          throw away the commits that make this copy yours.
+
+          Resolve it locally, whichever way fits:
+
+          \`\`\`bash
+          git remote add upstream $SERVER_URL/$upstream.git   # once
+          git fetch upstream
+          git checkout $branch
+          git merge upstream/$branch      # resolve, commit, push
+          \`\`\`
+
+          Close this issue afterwards — it is what keeps the sync from filing another.
+
+          The answer was:
+
+          \`\`\`
+          $RESULT
+          \`\`\`" || failed=1 ;;
+              5)
+                note "\`$branch\`: cannot read the upstream."
+                report "Sync cannot reach \`$upstream\`" \
+          "Fetching \`$SERVER_URL/$upstream.git\` failed.
+
+          If that repository is private, this copy needs its own read access: add a
+          personal access token that can read it as the secret \`UPSTREAM_TOKEN\`. If the
+          name is wrong, set the repository variable \`UPSTREAM_REPO\` to the right
+          \`owner/name\`.
+
+          The answer was:
+
+          \`\`\`
+          $RESULT
+          \`\`\`" || failed=1 ;;
+              6)
+                note "\`$branch\`: missing on one side — skipped ($RESULT)." ;;
+              7)
+                note "\`$branch\`: unrelated histories — cannot merge."
+                report "Sync cannot merge: \`$branch\` has unrelated history" \
+          "This copy shares no commits with \`$upstream\`, so git refuses to merge the two.
+
+          That happens when the copy was made by \"Use this template\", by uploading
+          files, or by committing them afresh — not by \`git clone --bare\` plus
+          \`git push --mirror\`, which is what keeps the history and lets the sync work.
+
+          Remaking the copy the mirror way is the reliable fix:
+
+          \`\`\`bash
+          git clone --bare $SERVER_URL/$upstream.git
+          cd $(basename "$upstream").git
+          git push --mirror $SERVER_URL/$GITHUB_REPOSITORY.git
+          \`\`\`
+
+          That overwrites this repository's history, so do it before your own work
+          piles up here — or merge by hand with \`--allow-unrelated-histories\` once
+          and close this issue.
+
+          The answer was:
+
+          \`\`\`
+          $RESULT
+          \`\`\`" || failed=1 ;;
+              *)
+                note "\`$branch\`: sync failed."
+                report "Sync failed on \`$branch\`" \
+          "The sync could not update \`$branch\` and the reason is not one this workflow
+          recognises. The answer was:
+
+          \`\`\`
+          $RESULT
+          \`\`\`" || failed=1 ;;
+            esac
+          done
+
+          exit $failed
