@@ -49,6 +49,17 @@ links them, assembles the constitution with real ids substituted, adds the
 service pages, and hands you a ready bootloader to paste into your agent's
 settings.
 
+In Claude Code and Cowork the same procedure installs as a plugin:
+
+```
+/plugin marketplace add david-dvinskykh/claude-memory-constitution
+/plugin install notion-memory-constitution@claude-memory-constitution
+```
+
+That adds two skills — `memory-install` and `memory-update`. The plugin brings
+no Notion access of its own and connects no MCP servers; the requirements above
+still apply. Details: [Плагин](plugin.md) (Russian).
+
 Answer `en` and everything is created in English: base names, field names,
 option values, the constitution, the bootloader. The language is chosen once
 at install time — it is baked into the field names the constitution and the

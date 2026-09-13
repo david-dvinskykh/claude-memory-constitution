@@ -41,6 +41,17 @@ title: Швидкий старт
 Прочитай https://david-dvinskykh.github.io/claude-memory-constitution/spec/install.txt і виконай повністю.
 ```
 
+У Claude Code та Cowork та сама процедура ставиться плагіном:
+
+```
+/plugin marketplace add david-dvinskykh/claude-memory-constitution
+/plugin install notion-memory-constitution@claude-memory-constitution
+```
+
+Додаються два навички — `memory-install` і `memory-update`. Доступу до Notion
+плагін із собою не приносить і MCP-серверів не підключає. Подробиці —
+[Плагін](plugin.md) (російською).
+
 Він запитає дві речі — мову структури (`ru`, `uk` чи `en`) і де в Notion
 створити базу — і далі зробить усе сам: створить бази, пов’яже їх, збере
 конституцію з підставленими id, заведе службові сторінки й видасть готовий

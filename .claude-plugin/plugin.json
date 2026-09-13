@@ -1,0 +1,21 @@
+{
+  "name": "notion-memory-constitution",
+  "displayName": "Memory Constitution for Notion",
+  "version": "1.4.0",
+  "description": "Installs and maintains a long-term memory structure for an AI agent in Notion: 16 linked databases plus the written constitution the agent follows. Three structure languages — Russian, Ukrainian, English.",
+  "author": {
+    "name": "David Dvinskykh",
+    "url": "https://github.com/david-dvinskykh"
+  },
+  "homepage": "https://david-dvinskykh.github.io/claude-memory-constitution/",
+  "repository": "https://github.com/david-dvinskykh/claude-memory-constitution",
+  "license": "MIT",
+  "keywords": [
+    "notion",
+    "memory",
+    "long-term-memory",
+    "knowledge-base",
+    "agent-instructions",
+    "personal-assistant"
+  ]
+}

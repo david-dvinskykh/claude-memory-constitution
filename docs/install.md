@@ -4,7 +4,8 @@ title: Установка
 
 # Установка
 
-[← К началу](index.md) · [Схема баз](schema.md) · [Обновления](updates.md)
+[← К началу](index.md) · [Схема баз](schema.md) · [Плагин](plugin.md) ·
+[Обновления](updates.md)
 
 ---
 
@@ -45,6 +46,20 @@ MCP, а не конкретного клиента.
 
 Установка занимает несколько минут: 16 баз, 30 связей, формулы и роллапы,
 пять служебных страниц.
+
+## Один плагин
+
+В клиентах с поддержкой плагинов — Claude Code и Cowork — та же процедура
+ставится командой и дальше вызывается по имени:
+
+```
+/plugin marketplace add david-dvinskykh/claude-memory-constitution
+/plugin install notion-memory-constitution@claude-memory-constitution
+```
+
+После этого доступны два навыка: `memory-install` ставит структуру,
+`memory-update` обновляет её. Требования к Notion те же — плагин не приносит
+с собой ни доступа, ни MCP-серверов. Подробно — [Плагин](plugin.md).
 
 ## Выбор языка
 
