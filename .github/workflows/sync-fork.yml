@@ -1,0 +1,179 @@
+# Keeps a fork of this repository up to date with its upstream.
+#
+# This file travels with the fork, so a forker needs no setup beyond enabling
+# Actions. It does nothing in the upstream repository itself.
+#
+# It never rewrites history and never force-pushes: syncing is done by the
+# same server-side fast-forward GitHub performs behind the "Sync fork" button,
+# so a fork's own commits are never dropped. When the fork has diverged, the
+# run stops and files one issue instead.
+name: Sync fork with upstream
+
+on:
+  schedule:
+    # Weekly. The template releases rarely; daily runs would be noise.
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      branches:
+        description: 'Branches to sync, space separated. Empty = the default branch.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sync-fork
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    # The upstream has no upstream of its own. Anywhere else, run.
+    if: github.repository != 'david-dvinskykh/claude-memory-constitution'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync branches with upstream
+        env:
+          # A fine-grained PAT in the SYNC_TOKEN secret takes over when the
+          # default token is not enough — see the note at the bottom.
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          BRANCHES: ${{ inputs.branches }}
+          USING_PAT: ${{ secrets.SYNC_TOKEN && 'yes' || 'no' }}
+        run: |
+          set -uo pipefail
+
+          note() { echo "$*" >> "$GITHUB_STEP_SUMMARY"; echo "$*"; }
+
+          # One open issue is the durable signal; a second one every week is
+          # not. Report once and stay quiet until the owner closes it.
+          report() {
+            title="$1"
+            # Every line of this script carries the YAML block indentation;
+            # left in place it would turn the issue body into a code block.
+            body=$(sed 's/^ *//' <<<"$2")
+            open=$(gh issue list --state open --label sync-fork \
+                     --json number --jq '.[0].number // empty' 2>/dev/null)
+            if [ -n "$open" ]; then
+              note "Already reported in issue #$open — not filing another."
+              return 0
+            fi
+            gh label create sync-fork --color ededed \
+              --description "Automatic upstream sync" >/dev/null 2>&1 || true
+            if gh issue create --title "$title" --body "$body" \
+                 --label sync-fork >/dev/null; then
+              note "Filed an issue with the details."
+              return 0
+            fi
+            # Issues can be disabled on the fork. Then the failed run is the
+            # only trace left, so make sure there is one.
+            note "Could not file an issue — failing the run so this is visible."
+            return 1
+          }
+
+          repo_json=$(gh api "repos/$GITHUB_REPOSITORY" 2>&1) || {
+            note "Cannot read $GITHUB_REPOSITORY: $repo_json"
+            exit 1
+          }
+          is_fork=$(jq -r '.fork' <<<"$repo_json")
+          parent=$(jq -r '.parent.full_name // ""' <<<"$repo_json")
+          default_branch=$(jq -r '.default_branch' <<<"$repo_json")
+
+          if [ "$is_fork" != "true" ]; then
+            note "$GITHUB_REPOSITORY is not a fork — nothing to sync."
+            note "A copy made without forking has no upstream GitHub knows of."
+            exit 0
+          fi
+
+          branches="${BRANCHES:-}"
+          [ -n "$branches" ] || branches="$default_branch"
+          note "Syncing **$GITHUB_REPOSITORY** with **$parent** (token: $([ "$USING_PAT" = yes ] && echo SYNC_TOKEN || echo GITHUB_TOKEN))."
+
+          failed=0
+          for branch in $branches; do
+            out=$(gh api --method POST "repos/$GITHUB_REPOSITORY/merge-upstream" \
+                    -f branch="$branch" 2>&1)
+            rc=$?
+
+            if [ $rc -eq 0 ]; then
+              kind=$(jq -r '.merge_type // "unknown"' <<<"$out" 2>/dev/null)
+              case "$kind" in
+                none) note "\`$branch\`: already up to date." ;;
+                fast-forward) note "\`$branch\`: fast-forwarded to upstream." ;;
+                merge) note "\`$branch\`: merged upstream into local commits." ;;
+                *) note "\`$branch\`: synced." ;;
+              esac
+              continue
+            fi
+
+            # Upstream touched .github/workflows and the token may not write
+            # there. Only a PAT with the workflow scope can.
+            if grep -qi 'workflow' <<<"$out" && grep -qi 'permission\|scope\|refusing' <<<"$out"; then
+              note "\`$branch\`: blocked — upstream changed a workflow file."
+              report "Fork sync needs a token that may write workflows" \
+          "The weekly sync could not update \`$branch\`: the upstream release changes a
+          file under \`.github/workflows/\`, and \`GITHUB_TOKEN\` is never allowed to write
+          there. No permissions block can grant it — the scope does not exist for it.
+
+          To unblock, add a personal access token as the repository secret \`SYNC_TOKEN\`:
+
+          - fine-grained: this repository only, **Contents: read and write** and
+            **Workflows: read and write**;
+          - classic: the \`workflow\` scope (it includes \`repo\`).
+
+          Settings → Secrets and variables → Actions → New repository secret, named
+          \`SYNC_TOKEN\`. The workflow picks it up on the next run; nothing else changes.
+
+          Until then the sync keeps working for every release that leaves workflow files
+          alone, and the \"Sync fork\" button in the GitHub UI works by hand at any time.
+
+          GitHub's answer was:
+
+          \`\`\`
+          $out
+          \`\`\`" || failed=1
+              continue
+            fi
+
+            # 409: the fork and upstream both moved and the merge conflicts.
+            if grep -qi 'merge conflict\|409' <<<"$out"; then
+              note "\`$branch\`: diverged from upstream — a merge would conflict."
+              report "Fork sync stopped: \`$branch\` conflicts with upstream" \
+          "The weekly sync left \`$branch\` untouched: it and the upstream branch changed
+          the same lines, so the merge conflicts.
+
+          This is deliberately not resolved automatically. Overwriting the branch would
+          throw away the commits that make this fork yours.
+
+          Resolve it locally, whichever way fits:
+
+          \`\`\`bash
+          git remote add upstream https://github.com/$parent.git   # once
+          git fetch upstream
+          git checkout $branch
+          git merge upstream/$branch      # resolve, commit, push
+          \`\`\`
+
+          Close this issue afterwards — it is what keeps the sync from filing another.
+
+          GitHub's answer was:
+
+          \`\`\`
+          $out
+          \`\`\`" || failed=1
+              continue
+            fi
+
+            note "\`$branch\`: sync failed."
+            report "Fork sync failed on \`$branch\`" \
+          "The weekly sync could not update \`$branch\` and the reason is not one this
+          workflow recognises. GitHub's answer was:
+
+          \`\`\`
+          $out
+          \`\`\`" || failed=1
+          done
+
+          exit $failed
