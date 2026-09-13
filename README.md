@@ -70,6 +70,7 @@
 | `docs/*.md` | Человеческая документация, публикуется через GitHub Pages |
 | `tools/validate_spec.py` | Проверка целостности спецификации на всех языках |
 | `.github/workflows/pages.yml` | Сборка и публикация `docs/` на GitHub Pages |
+| `.github/workflows/validate.yml` | Проверка спецификации и манифеста плагина на каждый push |
 
 ## Чем это отличается от обычной памяти агента
 
@@ -113,6 +114,9 @@ python3 tools/validate_spec.py
 ```
 claude plugin validate .
 ```
+
+Обе проверки гоняются на каждый push workflow'ом
+`.github/workflows/validate.yml` — руками их запускать не обязательно.
 
 ## Публикация документации
 
